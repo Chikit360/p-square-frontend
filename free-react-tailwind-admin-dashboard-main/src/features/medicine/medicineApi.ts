@@ -79,3 +79,19 @@ export const activeMedicines = createAsyncThunk(
     }
   }
 );
+
+// Search Medicines
+
+export const searchMedicine = createAsyncThunk(
+  'medicine/search',
+  async (data: { q: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get('/medicines/search', {
+        params: { q: data.q },
+      });
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    }
+  }
+);

@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createMedicine, getAllMedicines, deleteMedicineById, getMedicineById, updateMedicineById } from './medicineApi';
+import { createMedicine, getAllMedicines, deleteMedicineById, getMedicineById, updateMedicineById, searchMedicine } from './medicineApi';
 
 interface Medicine {
+  _id:string,
   medicineId: string;
   name: string;
   genericName: string;
@@ -26,6 +27,7 @@ interface Medicine {
 
 interface MedicineState {
   medicines: Medicine[];
+  searchResult:Medicine[],
   selectedMedicine: Medicine | null;
   loading: boolean;
   error: string | null;
@@ -33,6 +35,7 @@ interface MedicineState {
 
 const initialState: MedicineState = {
   medicines: [],
+  searchResult:[],
   selectedMedicine: null,
   loading: false,
   error: null,
@@ -44,6 +47,18 @@ const medicineSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+    .addCase(searchMedicine.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(searchMedicine.fulfilled, (state, action) => {
+      state.loading = false;
+      state.searchResult = action.payload.data;
+    })
+    .addCase(searchMedicine.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message || 'Failed to fetch medicines';
+    })
       .addCase(getAllMedicines.pending, (state) => {
         state.loading = true;
         state.error = null;

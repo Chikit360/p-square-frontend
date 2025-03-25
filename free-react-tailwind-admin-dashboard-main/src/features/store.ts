@@ -4,13 +4,15 @@ import medicineReducer from '../features/medicine/medicine.slice'
 import inventoryReducer from '../features/inventory/inventory.slice'
 import activeMedicineReducer from '../features/medicine/activeMedicine.slice'
 import authMiddleware from './middlewares/authMiddleware'
+import stockReducer from '../features/stock/stock.slice';
 
 const store = configureStore({
   reducer: {
     auth: authReducer,
     medicine:medicineReducer,
     inventory:inventoryReducer,
-    activeMedicines:activeMedicineReducer
+    activeMedicines:activeMedicineReducer,
+    stock: stockReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authMiddleware),

@@ -39,27 +39,35 @@ const sellSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Create Sale
       .addCase(createSale.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(createSale.fulfilled, (state, action: PayloadAction<Sale>) => {
+      .addCase(createSale.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        const monthYear = new Date(action.payload.createdAt);
+        const { data, status, message, error } = action.payload;
+
+        if (status !== 200) {
+          state.error = error || message;
+          return;
+        }
+
+        const monthYear = new Date(data.createdAt);
         const year = monthYear.getFullYear();
         const month = monthYear.getMonth() + 1;
 
         const existingMonth = state.sales.find((sale) => sale.year === year && sale.month === month);
 
         if (existingMonth) {
-          existingMonth.sales.push(action.payload);
-          existingMonth.totalTransaction += action.payload.totalAmount;
+          existingMonth.sales.push(data);
+          existingMonth.totalTransaction += data.totalAmount;
         } else {
           state.sales.push({
             year,
             month,
-            totalTransaction: action.payload.totalAmount,
-            sales: [action.payload],
+            totalTransaction: data.totalAmount,
+            sales: [data],
           });
         }
       })
@@ -67,13 +75,21 @@ const sellSlice = createSlice({
         state.loading = false;
         state.error = String(action.payload) || 'Failed to create sale';
       })
+      // Get All Sales
       .addCase(getAllSales.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(getAllSales.fulfilled, (state, action: PayloadAction<MonthlySale[]>) => {
+      .addCase(getAllSales.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.sales = action.payload;
+        const { data, status, message, error } = action.payload;
+
+        if (status !== 200) {
+          state.error = error || message;
+          return;
+        }
+
+        state.sales = data;
       })
       .addCase(getAllSales.rejected, (state, action) => {
         state.loading = false;

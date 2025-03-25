@@ -13,6 +13,8 @@ import SellForm from "./pages/inventory/SellForm";
 import SellHistory from "./pages/inventory/SellHistory";
 import ProtectedLayout from "./layout/ProtectedLayout";
 import { useEffect } from "react";
+import Stock from "./pages/inventory/Stock";
+import UpdateStock from "./pages/inventory/UpdateStock";
 
 export default function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -44,6 +46,8 @@ export default function App() {
             <Route path="/medicine/list" element={<MedicineList />} />
             <Route path="/inventory" element={<SellForm />} />
             <Route path="/inventory/history" element={<SellHistory />} />
+            <Route path="/stock/" element={<Stock />} />
+            <Route path="/stock/update" element={<UpdateStock />} />
           </Route>
         </Route>
 
