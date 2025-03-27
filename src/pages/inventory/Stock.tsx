@@ -48,12 +48,12 @@ const Stock: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {stock.stockDetails.map((detail, index) => (
+                {stock.inventoryDetails ?.map((detail, index) => (
                   <tr key={index}>
                     <td className="border border-gray-300 p-2">
                       {new Date(detail.expiryDate).toLocaleDateString()}
                     </td>
-                    <td className="border border-gray-300 p-2">{detail.quantity}</td>
+                    <td className="border border-gray-300 p-2">{detail.quantityInStock}</td>
                   </tr>
                 ))}
               </tbody>

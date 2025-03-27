@@ -3,14 +3,14 @@ import { addOrUpdateStock, fetchStockDetails } from './stockApi';
 
 interface StockDetail {
   expiryDate: string;
-  quantity: number;
+  quantityInStock: number;
 }
 
 interface StockItem {
   medicineId: string;
   medicineName: string;
   totalQuantity: number;
-  stockDetails: StockDetail[];
+  inventoryDetails: StockDetail[];
 }
 
 interface StockState {

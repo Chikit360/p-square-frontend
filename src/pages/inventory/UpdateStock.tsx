@@ -48,7 +48,7 @@ const UpdateStock: React.FC = () => {
 
   // Handle Medicine Selection
   const handleSelectMedicine = (stock: any) => {
-    setSelectedMedicineId(stock._id);
+    setSelectedMedicineId(stock.medicineId);
     setSearchTerm(stock.name);
     setExpiryDate(stock.expiryDate ? new Date(stock.expiryDate).toISOString().split('T')[0] : '');
     setQuantity(stock.quantity?.toString() || '');
@@ -118,7 +118,7 @@ const UpdateStock: React.FC = () => {
       <button
         className="bg-blue-500 text-white px-4 py-2 disabled:bg-gray-400"
         onClick={handleUpdateStock}
-        disabled={!selectedMedicineId || !expiryDate || !quantity}
+        // disabled={!selectedMedicineId || !expiryDate || !quantity}
       >
         Update Stock
       </button>

@@ -3,7 +3,7 @@ import axiosInstance from '../../utils/axiosInstance';
 
 export const getStockDetails = async () => {
   
-  const response = await axiosInstance.get("/stock");
+  const response = await axiosInstance.get("/inventories");
   return response.data;
 };
 
@@ -20,7 +20,7 @@ export const addOrUpdateStock = createAsyncThunk(
     'stock/addOrUpdateStock',
     async (stockData: { medicineId: string; quantity: number; expiryDate: string }, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.post('/stock', stockData);
+        const response = await axiosInstance.post('/inventories', stockData);
         return response.data;
       } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Error adding or updating stock');

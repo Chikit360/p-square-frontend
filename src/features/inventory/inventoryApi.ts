@@ -6,7 +6,7 @@ export const createSale = createAsyncThunk(
     'sell/createSale',
     async (saleData: any, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.post('/sells', saleData);
+        const response = await axiosInstance.post('/stocks', saleData);
         return response.data;
       } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to create sale');
@@ -19,7 +19,7 @@ export const createSale = createAsyncThunk(
     'sell/getAllSales',
     async (_, { rejectWithValue }) => {
       try {
-        const response = await axiosInstance.get('/sells',);
+        const response = await axiosInstance.get('/stocks',);
         return response.data;
       } catch (error: any) {
         return rejectWithValue(error.response?.data?.message || 'Failed to fetch sales');
