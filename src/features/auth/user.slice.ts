@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {  loginUser } from './authApi';
+import { loginUser } from './authApi';
 import { SerializedError } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
 
@@ -15,14 +15,17 @@ interface User {
 
 interface AuthState {
   user: UserData | null;
-  isAuthenticated:boolean;
+  isAuthenticated: boolean;
   loading: boolean;
   error: string | null;
 }
 
+const token = Cookies.get('token');
+const storedUser = token ? JSON.parse(localStorage.getItem('user') || 'null') : null;
+
 const initialState: AuthState = {
-  user: null,
-  isAuthenticated:false,
+  user: storedUser,
+  isAuthenticated: !!token,
   loading: false,
   error: null,
 };
@@ -33,32 +36,21 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<User>) => {
       state.user = action.payload.data;
-      state.isAuthenticated=true
+      state.isAuthenticated = true;
+      localStorage.setItem('user', JSON.stringify(action.payload.data));
       if (action.payload.token) {
-        Cookies.set('token', action.payload.token, { expires: 7 }); // Store token for 7 days
+        Cookies.set('token', action.payload.token, { expires: 7 });
       }
     },
     logout: (state) => {
       state.user = null;
-      state.isAuthenticated=false
-      Cookies.remove('token'); // Remove token on logout
+      state.isAuthenticated = false;
+      Cookies.remove('token');
+      localStorage.removeItem('user');
     },
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchUser.pending, (state) => {
-      //   state.loading = true;
-      //   state.error = null;
-      // })
-      // .addCase(fetchUser.fulfilled, (state, action: PayloadAction<UserData>) => {
-      //   state.loading = false;
-      //   state.user = action.payload;
-      //   state.isAuthenticated=true
-      // })
-      // .addCase(fetchUser.rejected, (state, action) => {
-      //   state.loading = false;
-      //   state.error = String(action.payload) || 'Failed to fetch user';
-      // })
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -66,10 +58,9 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.loading = false;
         state.user = action.payload.data;
-        if (action.payload.token) {
-          Cookies.set('token', action.payload.token, { expires: 7 }); // Store token
-          state.isAuthenticated=true
-        }
+        state.isAuthenticated = true;
+        Cookies.set('token', action.payload.token!, { expires: 7 });
+        localStorage.setItem('user', JSON.stringify(action.payload.data));
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<unknown, string, any, SerializedError>) => {
         state.loading = false;
