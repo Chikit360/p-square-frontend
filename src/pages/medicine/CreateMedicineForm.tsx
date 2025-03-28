@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { faker } from '@faker-js/faker';
 import { createMedicine } from '../../features/medicine/medicineApi';
+import LoadingOverlay from '../../components/loader/LoadingOverlay';
 
 const FORM_ENUM = ['tablet', 'capsule', 'syrup', 'injection', 'ointment'];
 const STRENGTH_ENUM = ['100 mg', '250 mg', '500 mg', '1 g', '2 g'];
@@ -14,7 +15,7 @@ const generateMedicineId = () => `MED${Math.floor(10000 + Math.random() * 90000)
 
 // Initially empty form
 const initialValues = {
-  medicineId:'',
+  medicineCode:'',
   name: '',
   genericName: '',
   manufacturer: '',
@@ -38,7 +39,7 @@ const initialValues = {
 
 // Generate fake data using faker
 const generateFakeData = () => ({
-  medicineId:generateMedicineId(),
+  medicineCode:generateMedicineId(),
   name: faker.commerce.productName(),
   genericName: faker.lorem.word(),
   manufacturer: faker.company.name(),
@@ -95,6 +96,8 @@ const CreateMedicineForm = () => {
   };
 
   return (
+    <>
+    
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">Add Medicine to Stock</h1>
       <Formik
@@ -168,6 +171,8 @@ const CreateMedicineForm = () => {
         )}
       </Formik>
     </div>
+    <LoadingOverlay isLoading={loading} />
+    </>
   );
 };
 

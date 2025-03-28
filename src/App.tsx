@@ -15,6 +15,7 @@ import ProtectedLayout from "./layout/ProtectedLayout";
 import { useEffect } from "react";
 import Stock from "./pages/inventory/Stock";
 import UpdateStock from "./pages/inventory/UpdateStock";
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -23,6 +24,8 @@ export default function App() {
   useEffect(() => {
     dispatch({ type: 'auth/checkAuth' });
   }, [dispatch]);
+
+  
 
   return (
     <Router>
@@ -54,6 +57,7 @@ export default function App() {
         {/* Fallback Route */}
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <ToastContainer />
     </Router>
   );
 }

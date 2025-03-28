@@ -71,8 +71,13 @@ const medicineSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch medicines';
       })
+      .addCase(createMedicine.pending, (state, action) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(createMedicine.fulfilled, (state, action) => {
         state.medicines.push(action.payload);
+        state.loading = false;
       })
       .addCase(deleteMedicineById.fulfilled, (state, action) => {
         state.medicines = state.medicines.filter((medicine) => medicine.medicineId !== action.payload);
