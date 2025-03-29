@@ -1,126 +1,127 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../features/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../features/store';
 import { addOrUpdateStock } from '../../features/stock/stockApi';
-import { searchMedicine } from '../../features/medicine/medicineApi';
 
-const UpdateStock: React.FC = () => {
+interface InventoryData {
+  medicineId: string;
+  batchNumber?: string;
+  manufactureDate?: string;
+  expiryDate?: string;
+  mrp?: number;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  quantityInStock?: number;
+  minimumStockLevel?: number;
+  shelfLocation?: string;
+}
+
+interface UpdateStockProps {
+  initialData?: InventoryData;
+}
+
+const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { searchResult, loading, error } = useSelector((state: RootState) => state.medicine);
 
-  const [dropDown, setDropDown] = useState<boolean>(false);
-  const [selectedMedicineId, setSelectedMedicineId] = useState<string>('');
-  const [expiryDate, setExpiryDate] = useState<string>('');
-  const [quantity, setQuantity] = useState<string>('');
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
+  // Initialize Form Data
+  console.log(initialData)
+  const [formData, setFormData] = useState<InventoryData>({
+    medicineId: initialData?.medicineId || '',
+    batchNumber: initialData?.batchNumber || '',
+    manufactureDate: initialData?.manufactureDate
+      ? new Date(initialData.manufactureDate).toISOString().split('T')[0]
+      : '',
+    expiryDate: initialData?.expiryDate
+      ? new Date(initialData.expiryDate).toISOString().split('T')[0]
+      : '',
+    mrp: initialData?.mrp ?? 0,
+    purchasePrice: initialData?.purchasePrice ?? 0,
+    sellingPrice: initialData?.sellingPrice ?? 0,
+    quantityInStock: initialData?.quantityInStock ?? 0,
+    minimumStockLevel: initialData?.minimumStockLevel ?? 0,
+    shelfLocation: initialData?.shelfLocation || '',
+  });
 
-  // Debounced Search
-  useEffect(() => {
-    if (!selectedMedicineId && searchTerm.length >= 3) {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-      const timeout = setTimeout(() => {
-        dispatch(searchMedicine({ q: searchTerm }));
-        setDropDown(true);
-      }, 300);
-      setDebounceTimeout(timeout);
-    } else {
-      setDropDown(false);
-    }
-    return () => {
-      if (debounceTimeout) clearTimeout(debounceTimeout);
-    };
-  }, [dispatch, searchTerm, selectedMedicineId]);
-
-  // Update stock handler
-  const handleUpdateStock = () => {
-    if (!selectedMedicineId || !expiryDate || !quantity) {
-      alert('Please fill all fields');
-      return;
-    }
-    dispatch(addOrUpdateStock({ medicineId: selectedMedicineId, expiryDate, quantity: Number(quantity) }));
-    setExpiryDate('');
-    setQuantity('');
-    setSearchTerm('');
-    setSelectedMedicineId('');
-    setDropDown(false);
+  // Handle Form Change
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'number' ? (value ? Number(value) : undefined) : value,
+    }));
   };
 
-  // Handle Medicine Selection
-  const handleSelectMedicine = (stock: any) => {
-    setSelectedMedicineId(stock.medicineId);
-    setSearchTerm(stock.name);
-    setExpiryDate(stock.expiryDate ? new Date(stock.expiryDate).toISOString().split('T')[0] : '');
-    setQuantity(stock.quantity?.toString() || '');
-    setDropDown(false);
+  // Submit Handler
+  const handleSubmit = async () => {
+    if (!formData.medicineId) {
+      alert('Please provide a Medicine ID!');
+      return;
+    }
+
+    try {
+      await dispatch(addOrUpdateStock(formData));
+      alert('Stock updated successfully!');
+    } catch (error) {
+      console.error('Error updating stock:', error);
+      alert('Failed to update stock. Please try again.');
+    }
   };
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Update Stock</h1>
-      {error && <p className="text-red-500">{error}</p>}
+      <h1 className="text-2xl font-bold mb-4">
+        {initialData?.medicineId ? 'Update Stock' : 'Add New Stock'}
+      </h1>
 
-      {/* Medicine Search Dropdown */}
-      <div className="mb-4 relative">
-        <label className="block mb-2">Search Medicine</label>
-        <input
-          type="text"
-          className="border p-2 w-full"
-          placeholder="Search by Medicine Name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => searchTerm.length >= 3 && setDropDown(true)}
-        />
+      {/* Form Grid Layout with 3 Columns */}
+      <div className="grid grid-cols-3 gap-6">
+        {/* Medicine ID */}
+        <div className="mb-4">
+          <label className="block mb-2">Medicine ID</label>
+          <input
+            type="text"
+            name="medicineId"
+            className="border p-2 w-full"
+            value={formData.medicineId}
+            onChange={handleChange}
+            disabled={!!initialData?.medicineId}
+          />
+        </div>
 
-        {/* Dropdown with Loader and Results */}
-        {searchTerm && dropDown && (
-          <ul className="absolute border bg-white w-full mt-1 max-h-40 overflow-y-auto">
-            {loading ? (
-              <li className="p-2 text-blue-500">Loading...</li>
-            ) : searchResult?.length > 0 ? (
-              searchResult.map((stock) => (
-                <li
-                  key={stock.medicineId}
-                  className={`p-2 cursor-pointer ${selectedMedicineId === stock.medicineId ? 'bg-blue-100' : ''}`}
-                  onClick={() => handleSelectMedicine(stock)}
-                >
-                  {stock.name} (Expiry: {new Date(stock.expiryDate).toLocaleDateString()} | Quantity: {stock.quantityInStock})
-                </li>
-              ))
-            ) : (
-              <li className="p-2 text-gray-500">No matching medicines found</li>
-            )}
-          </ul>
-        )}
+        {/* Render Other Fields Dynamically */}
+        {Object.entries(formData)
+          .filter(([key]) => key !== 'medicineId')
+          .map(([key, value]) => (
+            <div key={key} className="mb-4">
+              <label className="block mb-2 capitalize">
+                {key.replace(/([A-Z])/g, ' $1').trim()}
+              </label>
+              <input
+                type={
+                  key.includes('Date')
+                    ? 'date'
+                    : key.includes('Price') || key.includes('quantity') || key === 'minimumStockLevel'
+                    ? 'number'
+                    : 'text'
+                }
+                name={key}
+                disabled={key === 'medicineId'}
+                placeholder={`Enter ${key.replace(/([A-Z])/g, ' $1').trim()}`}
+                className="border p-2 w-full"
+                value={value?.toString() || ''}
+                onChange={handleChange}
+              />
+            </div>
+          ))}
       </div>
 
-      {/* Expiry Date and Quantity Inputs */}
-      <div className="mb-4">
-        <label className="block mb-2">Expiry Date</label>
-        <input
-          type="date"
-          className="border p-2 w-full"
-          value={expiryDate}
-          onChange={(e) => setExpiryDate(e.target.value)}
-        />
-      </div>
-
-      <div className="mb-4">
-        <label className="block mb-2">Quantity</label>
-        <input
-          type="number"
-          className="border p-2 w-full"
-          value={quantity}
-          onChange={(e) => setQuantity(e.target.value)}
-        />
-      </div>
-
+      {/* Submit Button */}
       <button
-        className="bg-blue-500 text-white px-4 py-2 disabled:bg-gray-400"
-        onClick={handleUpdateStock}
-        // disabled={!selectedMedicineId || !expiryDate || !quantity}
+        className="bg-blue-500 text-white px-4 py-2 mt-4"
+        onClick={handleSubmit}
+        disabled={!formData.medicineId}
       >
-        Update Stock
+        {initialData?.medicineId ? 'Update Stock' : 'Add Stock'}
       </button>
     </div>
   );

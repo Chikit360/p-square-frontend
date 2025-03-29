@@ -4,11 +4,13 @@ import { Link, useLocation } from "react-router";
 // Assume these icons are imported from an icon library
 import {
   BoxCubeIcon,
+  BoxIcon,
   CalenderIcon,
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
+  MedicineIcon,
   PageIcon,
   PieChartIcon,
   PlugInIcon,
@@ -28,18 +30,18 @@ type NavItem = {
 const navItems: NavItem[] = [
   {
     icon: <GridIcon />,
-    name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    name: "Home",
+    subItems: [{ name: "Dashboard", path: "/", pro: false }],
   },
   {
-    icon: <GridIcon />,
+    icon: <MedicineIcon />,
     name: "Medicine",
-    subItems: [{ name: "Create", path: "/medicine/add", pro: false },{ name: "List", path: "/medicine/list", pro: false }],
+    subItems: [{ name: "Items", path: "/medicine/items", pro: false },{ name: "Inventory", path: "/medicine/inventory", pro: false }],
   },
   {
-    icon: <GridIcon />,
-    name: "Inventory",
-    subItems: [{ name: "Sell", path: "/inventory/", pro: false },{ name: "Today Sell", path: "/inventory/history", pro: false },{ name: "Stock", path: "/stock/", pro: false },{ name: "Update Stock", path: "/stock/update", pro: false }],
+    icon: <BoxIcon />,
+    name: "Sell",
+    subItems: [{ name: "List", path: "/sell", pro: false },],
   },
   // {
   //   icon: <CalenderIcon />,

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { getAllSales } from '../../features/inventory/inventoryApi';
+import Button from '../../components/ui/button/Button';
+import { Link } from 'react-router';
 
 const SellHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,7 +33,10 @@ const SellHistory = () => {
 
   return (
     <div className="p-8">
+      <div className='flex justify-between items-center'>
       <h1 className="text-2xl font-bold mb-4">Sales History</h1>
+      <Button onClick={()=>console.log("k")}> <Link to={"/sell/add"}>Add Sell</Link> </Button>
+      </div>
 
       {sales.map((monthlySale, index) => (
         <div key={index} className="mb-8">

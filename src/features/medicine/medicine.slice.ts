@@ -4,6 +4,7 @@ import { createMedicine, getAllMedicines, deleteMedicineById, getMedicineById, u
 interface Medicine {
   _id:string,
   medicineId: string;
+  medicineCode:string,
   name: string;
   genericName: string;
   manufacturer: string;
@@ -23,12 +24,14 @@ interface Medicine {
   prescriptionRequired: boolean;
   notes?: string;
   status: string;
+  totalQuantity: number;
 }
 
 interface MedicineState {
   medicines: Medicine[];
   searchResult:Medicine[],
   selectedMedicine: Medicine | null;
+  success:boolean,
   loading: boolean;
   error: string | null;
 }
@@ -37,6 +40,7 @@ const initialState: MedicineState = {
   medicines: [],
   searchResult:[],
   selectedMedicine: null,
+  success: false,
   loading: false,
   error: null,
 };
@@ -53,6 +57,7 @@ const medicineSlice = createSlice({
     })
     .addCase(searchMedicine.fulfilled, (state, action) => {
       state.loading = false;
+      state.success = true;
       state.searchResult = action.payload.data;
     })
     .addCase(searchMedicine.rejected, (state, action) => {
@@ -73,10 +78,12 @@ const medicineSlice = createSlice({
       })
       .addCase(createMedicine.pending, (state, action) => {
         state.loading = true;
+        state.success = false;
         state.error = null;
       })
       .addCase(createMedicine.fulfilled, (state, action) => {
-        state.medicines.push(action.payload);
+        state.medicines.push(action.payload.data);
+        state.success = true;
         state.loading = false;
       })
       .addCase(deleteMedicineById.fulfilled, (state, action) => {
@@ -86,9 +93,10 @@ const medicineSlice = createSlice({
         state.selectedMedicine = action.payload;
       })
       .addCase(updateMedicineById.fulfilled, (state, action) => {
-        const index = state.medicines.findIndex((medicine) => medicine.medicineId === action.payload.medicineId);
+        console.log(action.payload.data._id)
+        const index = state.medicines.findIndex((medicine) =>String(medicine._id) === String(action.payload.data._id));
         if (index !== -1) {
-          state.medicines[index] = action.payload;
+          state.medicines[index] = {...action.payload.data}; // correct in future
         }
       });
   },

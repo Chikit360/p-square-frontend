@@ -26,7 +26,7 @@ const LoadingOverlay: React.FC<LoadingOverlayProps> = ({ isLoading }) => {
 
   return ReactDOM.createPortal(
     <div
-      className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-5 flex items-center justify-center z-80 overflow-hidden
+      className={`fixed top-0 left-0 w-full h-full bg-white backdrop-opacity-55 bg-opacity-5 flex items-center justify-center z-80 overflow-hidden
       ${isLoading ? 'opacity-100 transition-opacity duration-300' : 'opacity-0 transition-opacity duration-300'}
       `}
     >
