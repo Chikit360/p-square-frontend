@@ -12,7 +12,7 @@ const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({ title, message, o
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-white opacity-30 flex items-center justify-center z-85">
+    <div className="fixed inset-0 bg-white opacity-90 flex items-center justify-center z-85">
       <div className="bg-white rounded-lg shadow-lg w-96 p-6 animate-fadeIn">
         {/* Header */}
         <h2 className="text-xl font-bold text-gray-800 mb-4">{title}</h2>
