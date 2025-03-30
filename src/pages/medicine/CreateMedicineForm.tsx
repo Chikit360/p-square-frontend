@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers, FieldProps } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { faker } from '@faker-js/faker';
 import { createMedicine } from '../../features/medicine/medicineApi';
-import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { useNavigate } from 'react-router';
 import ConfirmationPopup from '../../components/ui/pop-up/ConfirmationPopUp';
 import Label from '../../components/form/Label';
 import { ChevronDownIcon } from '../../icons';
-import Alert from '../../components/ui/Alert/Alert';
 
 const FORM_ENUM = ['tablet', 'capsule', 'syrup', 'injection', 'ointment'];
 const STRENGTH_ENUM = ['100 mg', '250 mg', '500 mg', '1 g', '2 g'];
@@ -60,7 +58,7 @@ const CreateMedicineForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate=useNavigate()
   const [openConfirmationBox, setOpenConfirmationBox] = useState<boolean>(false)
-  const { loading,success } = useSelector((state: RootState) => state.medicine);
+  const { loading } = useSelector((state: RootState) => state.medicine);
 
   const handleSubmit = async (
     values: typeof initialValues,
@@ -86,7 +84,6 @@ const CreateMedicineForm = () => {
       >
         {({ isSubmitting, setValues }) => (
           <Form>
-             <Alert status={success} variant='success' message='Medicine created' title='Success' />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.keys(initialValues).map((key) => (
                 <div key={key} className="mb-4">

@@ -1,7 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import Cookies from 'js-cookie'
-import axiosInstance from '../../utils/axiosInstance'
 
 interface LoginCredentials {
   username: string

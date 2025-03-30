@@ -1,6 +1,4 @@
 import { Middleware, createAction } from '@reduxjs/toolkit';
-import Cookies from 'js-cookie';
-import axios from 'axios';
 import { logout, setUser } from '../auth/user.slice';
 import axiosInstance from '../../utils/axiosInstance';
 

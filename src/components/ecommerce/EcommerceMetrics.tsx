@@ -2,10 +2,9 @@ import {
   ArrowDownIcon,
   ArrowUpIcon,
   BoxIconLine,
-  GroupIcon,
   MedicineIcon,
 } from "../../icons";
-import Badge from "../ui/Badge/Badge";
+import Badge from "../ui/badge/Badge";
 
 export default function EcommerceMetrics() {
   return (

@@ -41,7 +41,7 @@ const AppLayout: React.FC = () => {
     dispatch(getAllMedicines());
   
     
-  }, [])
+  }, [dispatch])
   
   return (
     <SidebarProvider>

@@ -4,8 +4,8 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/Table/index";
-import Badge from "../ui/Badge/Badge";
+} from "../ui/table/index";
+import Badge from "../ui/badge/Badge";
 
 // Define the TypeScript interface for the table rows
 interface Product {

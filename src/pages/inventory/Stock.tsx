@@ -6,15 +6,15 @@ import Button from '../../components/ui/button/Button';
 import { Modal } from '../../components/ui/modal/index';
 import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table';
+import { Table, TableBody, TableHeader, TableRow } from '../../components/ui/table';
 import { Medicine } from '../../helpers/interfaces';
 import { useSearchParams } from 'react-router';
 
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [searchParams,setSearchParams]=useSearchParams();
-  const { inventoryData, loading: stockLoader, error: stockError } = useSelector((state: RootState) => state.stock);
+  const [searchParams]=useSearchParams();
+  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);

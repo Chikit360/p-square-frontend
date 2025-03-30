@@ -76,7 +76,7 @@ const medicineSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch medicines';
       })
-      .addCase(createMedicine.pending, (state, action) => {
+      .addCase(createMedicine.pending, (state) => {
         state.loading = true;
         state.success = false;
         state.error = null;

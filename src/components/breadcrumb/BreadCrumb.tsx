@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { ChevronLeftIcon, ChevronRightIcon } from '../../icons';
+import { ChevronRightIcon } from '../../icons';
 
 const Breadcrumb: React.FC = () => {
   const location = useLocation();

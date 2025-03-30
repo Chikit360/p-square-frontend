@@ -1,20 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../features/store';
+import {  useSelector } from 'react-redux';
+import {  RootState } from '../../features/store';
 
 import { PencilIcon, TrashBinIcon } from '../../icons';
-import { Modal } from '../../components/ui/modal';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 
 import Button from '../../components/ui/button/Button';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table/index';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table/index';
 import { Link, useSearchParams } from 'react-router';
 import { Medicine } from '../../helpers/interfaces';
 
 
 export default function MedicineTable() {
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
-  const [searchParams,setSearchParams]=useSearchParams();
+  const [searchParams]=useSearchParams();
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
 
   useEffect(() => {

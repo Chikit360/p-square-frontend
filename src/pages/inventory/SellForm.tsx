@@ -27,7 +27,7 @@ interface SaleData {
 
 const SellForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { sales } = useSelector((state: RootState) => state.inventory);
+
   const { activeMedicineList } = useSelector((state: RootState) => state.activeMedicines);
 
   const [cart, setCart] = useState<CartItem[]>([]);

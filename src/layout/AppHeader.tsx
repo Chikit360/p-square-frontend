@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
@@ -8,8 +8,6 @@ import UserDropdown from "../components/header/UserDropdown";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
-  const [searchParams,setSearchParams]=useSearchParams();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -52,10 +50,11 @@ const AppHeader: React.FC = () => {
     const query = inputRef.current?.value.trim();
     if (query) {
       // Append query to the current location
-      navigate(`${location.pathname}?q=${encodeURIComponent(query)}`);
+      console.log(window.location.pathname)
+      navigate(`${window.location.pathname}?q=${encodeURIComponent(query)}`);
     } else {
       // Clear search parameter while staying on the same location
-      navigate(location.pathname);
+      navigate(window.location.pathname);
     }
   };
 

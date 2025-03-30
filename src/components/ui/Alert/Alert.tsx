@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom"; // Fix: "react-router" -> "react-router-dom"
 
 interface AlertProps {
   variant: "success" | "error" | "warning" | "info";
-  status: boolean; // Status of the alert
+
   title: string;
   message: string;
   showLink?: boolean;
@@ -13,28 +12,13 @@ interface AlertProps {
 
 const Alert: React.FC<AlertProps> = ({
   variant,
-  status,
+  
   title,
   message,
   showLink = false,
   linkHref = "#",
   linkText = "Learn more",
 }) => {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(status);
-
-    if (status) {
-      const timer = setTimeout(() => {
-        setShow(false);
-      }, 3000);
-
-      return () => clearTimeout(timer); // ✅ Correct cleanup
-    }
-  }, [status]);
-
-  if (!show) return null; // ✅ Prevent rendering when `show` is false
 
   const variantClasses = {
     success: {

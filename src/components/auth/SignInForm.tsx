@@ -24,7 +24,6 @@ const SignInForm: React.FC = () => {
   };
 
   useEffect(() => {
-    let toastId: number | null = null;
 
     if (isAuthenticated) {
       // toastId = 
