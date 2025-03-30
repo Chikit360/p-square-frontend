@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router';
 import ConfirmationPopup from '../../components/ui/pop-up/ConfirmationPopUp';
 import Label from '../../components/form/Label';
 import { ChevronDownIcon } from '../../icons';
-import Alert from '../../components/ui/alert/Alert';
+import Alert from '../../components/ui/Alert/Alert';
 
 const FORM_ENUM = ['tablet', 'capsule', 'syrup', 'injection', 'ointment'];
 const STRENGTH_ENUM = ['100 mg', '250 mg', '500 mg', '1 g', '2 g'];

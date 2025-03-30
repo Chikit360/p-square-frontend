@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { getAllSales } from '../../features/inventory/inventoryApi';
-import Button from '../../components/ui/button/Button';
+import Button from '../../components/ui/Button/Button';
 import { Link } from 'react-router';
 
 const SellHistory = () => {

@@ -5,7 +5,7 @@ import {
   GroupIcon,
   MedicineIcon,
 } from "../../icons";
-import Badge from "../ui/badge/Badge";
+import Badge from "../ui/Badge/Badge";
 
 export default function EcommerceMetrics() {
   return (
