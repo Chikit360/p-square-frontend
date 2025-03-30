@@ -9,25 +9,8 @@ import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import Button from '../../components/ui/button/Button';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
 import { Link } from 'react-router';
+import { Medicine } from '../../helpers/interfaces';
 
-
-
-
-interface Medicine {
-  medicineId: string;
-  _id: string;
-  medicineCode: string;
-  name: string;
-  genericName: string;
-  manufacturer: string;
-  category: string;
-  form: string;
-  strength: string;
-  unit: string;
-  prescriptionRequired: boolean;
-  notes?: string;
-  status: string;
-}
 
 export default function MedicineTable() {
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
@@ -57,7 +40,7 @@ export default function MedicineTable() {
           </TableHeader>
           <TableBody>
             {medicines?.map((medicine: Medicine) => (
-              <TableRow key={medicine.medicineId}>
+              <TableRow key={medicine._id}>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.medicineCode}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.name}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.genericName}</TableCell>
@@ -76,7 +59,7 @@ export default function MedicineTable() {
                 >
                   <PencilIcon className='dark:text-white' />
                 </Link>
-                <Link to={`/medicine/item/${medicine.medicineId}/delete`}>
+                <Link to={`/medicine/item/${medicine._id}/delete`}>
                 <TrashBinIcon className='dark:text-white' />
                 </Link>
 

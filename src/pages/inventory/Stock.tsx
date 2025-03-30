@@ -7,32 +7,8 @@ import { Modal } from '../../components/ui/modal';
 import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
+import { Medicine } from '../../helpers/interfaces';
 
-interface Medicine {
-  _id: string;
-  medicineId: string;
-  medicineCode: string;
-  name: string;
-  genericName: string;
-  manufacturer: string;
-  category: string;
-  form: string;
-  strength: string;
-  unit: string;
-  batchNumber: string;
-  manufactureDate: string;
-  expiryDate: string;
-  mrp: number;
-  purchasePrice: number;
-  sellingPrice: number;
-  quantityInStock: number;
-  minimumStockLevel: number;
-  shelfLocation: string;
-  prescriptionRequired: boolean;
-  notes?: string;
-  status: string;
-  totalQuantity: number;
-}
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();

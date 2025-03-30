@@ -8,26 +8,14 @@ import Label from '../../components/form/Label';
 import { useNavigate, useParams } from 'react-router';
 import { ChevronDownIcon } from '../../icons';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
+import { Medicine } from '../../helpers/interfaces';
 
 const FORM_ENUM = ['tablet', 'capsule', 'syrup', 'injection', 'ointment'];
 const STRENGTH_ENUM = ['100 mg', '250 mg', '500 mg', '1 g', '2 g'];
 const UNIT_ENUM = ['pieces', 'boxes', 'bottles', 'packs', 'strips'];
 const STATUS_ENUM = ['active', 'inactive'];
 
-interface Medicine {
-    _id: string;
-    medicineCode?: string;
-    name: string;
-    genericName: string;
-    manufacturer: string;
-    category: string;
-    form: string;
-    strength: string;
-    unit: string;
-    prescriptionRequired: boolean;
-    notes?: string;
-    status: string;
-}
+
 
 const UpdateMedicineForm = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -35,7 +23,7 @@ const UpdateMedicineForm = () => {
     const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
     const { id } = useParams<{ id: string }>();
 
-    const [initialValues, setInitialValues] = useState<Medicine>({
+    const [initialValues, setInitialValues] = useState<Partial<Medicine>>({
         _id: '',
         name: '',
         genericName: '',
@@ -72,9 +60,9 @@ const UpdateMedicineForm = () => {
     });
 
     // Submit Handler
-    const handleSubmit = async (values: Medicine, { setSubmitting }: FormikHelpers<Medicine>) => {
+    const handleSubmit = async (values: Partial<Medicine>, { setSubmitting }: FormikHelpers<Partial<Medicine>>) => {
         try {
-            await dispatch(updateMedicineById({ id: values._id, medicineData: values }));
+            await dispatch(updateMedicineById({ id: values._id as string, medicineData: values }));
             alert('Medicine updated successfully!');
             navigate(-1)
         } catch (error) {
@@ -89,7 +77,7 @@ const UpdateMedicineForm = () => {
     if (error) return <div className="text-center text-red-500">{error}</div>;
 
     return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
+        <Formik<Partial<Medicine>> initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
             {({ isSubmitting }) => (
                 <Form>
                     <h2 className='text-3xl font-medium mt-3 mb-5'>Update Medicine Detail</h2>

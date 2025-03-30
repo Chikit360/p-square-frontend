@@ -2,19 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../features/store';
 import { addOrUpdateStock } from '../../features/stock/stockApi';
+import { InventoryData } from '../../helpers/interfaces';
 
-interface InventoryData {
-  medicineId: string;
-  batchNumber?: string;
-  manufactureDate?: string;
-  expiryDate?: string;
-  mrp?: number;
-  purchasePrice?: number;
-  sellingPrice?: number;
-  quantityInStock?: number;
-  minimumStockLevel?: number;
-  shelfLocation?: string;
-}
+
 
 interface UpdateStockProps {
   initialData?: InventoryData;

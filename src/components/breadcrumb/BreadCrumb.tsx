@@ -13,7 +13,7 @@ const Breadcrumb: React.FC = () => {
         const to = `/${pathnames.slice(0, index + 1).join('/')}`;
         const isLast = index === pathnames.length - 1;
         return (
-          <span key={to} className="inline-flex items-center">
+          <span key={to} className="inline-flex items-center capitalize">
             <span className="mx-2"><ChevronRightIcon className='text-[10px]'/></span>
             {isLast ? (
               <span className="text-gray-500">{value}</span>
