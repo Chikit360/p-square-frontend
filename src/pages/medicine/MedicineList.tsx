@@ -30,7 +30,7 @@ export default function MedicineTable() {
 
   if (loading) return <LoadingOverlay isLoading={loading} />;
   if (error) return <p>Error: {error}</p>;
-  if (medicines.length === 0) {
+  if (medicines?.length === 0) {
     return <div className='flex justify-center items-center flex-col' ><div className="p-8 text-center text-gray-500 text-lg">No medicine history available.</div><Button > <Link to={"/medicine/items/add"}>Add Medicine</Link> </Button></div>;
   }
 

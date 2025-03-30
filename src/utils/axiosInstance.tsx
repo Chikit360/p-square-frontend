@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 
 // Create Axios instance
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:4000',
+  baseURL:import.meta.env.VITE_API_URL// "https://chikitback.thundergits.com",
 });
 
 // Add a request interceptor to attach the token
