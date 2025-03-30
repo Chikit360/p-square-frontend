@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axiosInstance';
+import axios from 'axios';
 
 
 // Create Medicine
@@ -9,8 +10,11 @@ export const createMedicine = createAsyncThunk(
     try {
       const response = await axiosInstance.post("/medicines", medicineData);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -22,8 +26,11 @@ export const getAllMedicines = createAsyncThunk(
     try {
       const response = await axiosInstance.get("/medicines");
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -35,8 +42,11 @@ export const getMedicineById = createAsyncThunk(
     try {
       const response = await axiosInstance.get(`/medicines/${id}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -48,8 +58,11 @@ export const updateMedicineById = createAsyncThunk(
     try {
       const response = await axiosInstance.put(`/medicines/${id}`, medicineData);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -61,8 +74,11 @@ export const deleteMedicineById = createAsyncThunk(
     try {
       await axiosInstance.delete(`/medicines/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -74,8 +90,11 @@ export const activeMedicines = createAsyncThunk(
     try {
       const response=await axiosInstance.get(`/medicines/active`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );
@@ -90,8 +109,11 @@ export const searchMedicine = createAsyncThunk(
         params: { q: data.q },
       });
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred');
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+      }
+      return rejectWithValue('An unexpected error occurred');
     }
   }
 );

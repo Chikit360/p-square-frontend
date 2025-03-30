@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
@@ -9,6 +9,7 @@ import UserDropdown from "../components/header/UserDropdown";
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
@@ -45,6 +46,12 @@ const AppHeader: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+  useEffect(() => {
+    const query = searchParams.get("q");
+    if (query) {
+      inputRef.current!.value = decodeURIComponent(query);
+    }
+  }, [searchParams]);
 
   const handleSearch = () => {
     const query = inputRef.current?.value.trim();
