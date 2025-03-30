@@ -6,8 +6,8 @@ import { PencilIcon, TrashBinIcon } from '../../icons';
 import { Modal } from '../../components/ui/modal';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 
-import Button from '../../components/ui/button/Button';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
+import Button from '../../components/ui/Button/Button';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table/index';
 import { Link } from 'react-router';
 
 

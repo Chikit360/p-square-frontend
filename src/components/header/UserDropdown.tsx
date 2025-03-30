@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
-import { Dropdown } from "../ui/dropdown/Dropdown";
+import { DropdownItem } from "../ui/Dropdown/DropdownItem";
+import { Dropdown } from "../ui/Dropdown/Dropdown";
 import { Link } from "react-router";
 import store from "../../features/store";
 import { logout } from "../../features/auth/user.slice";

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
-import Button from '../../components/ui/button/Button';
-import { Modal } from '../../components/ui/modal';
+import Button from '../../components/ui/Button/Button';
+import { Modal } from '../../components/ui/modal/index';
 import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table/index';
 
 interface Medicine {
   _id: string;
