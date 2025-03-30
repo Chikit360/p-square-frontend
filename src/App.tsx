@@ -15,8 +15,9 @@ import ProtectedLayout from "./layout/ProtectedLayout";
 import { useEffect } from "react";
 import Stock from "./pages/inventory/Stock";
 import UpdateStock from "./pages/inventory/UpdateStock";
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import UpdateMedicineForm from "./pages/medicine/UpdateMedicine";
+import UserProfiles from "./pages/UserProfiles";
 
 export default function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
@@ -54,6 +55,7 @@ export default function App() {
             <Route path="/sell/add" element={<SellForm />} />
             <Route path="/medicine/inventory" element={<Stock />} />
             <Route path="/medicine/inventory/:id" element={<UpdateStock />} />
+            <Route path="/profile" element={<UserProfiles />} />
           </Route>
         </Route>
 

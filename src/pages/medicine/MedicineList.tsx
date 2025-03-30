@@ -6,14 +6,27 @@ import { PencilIcon, TrashBinIcon } from '../../icons';
 import { Modal } from '../../components/ui/modal';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 
-import Button from '../../components/ui/Button/Button';
+import Button from '../../components/ui/button/Button';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table/index';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 import { Medicine } from '../../helpers/interfaces';
 
 
 export default function MedicineTable() {
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
+  const [searchParams,setSearchParams]=useSearchParams();
+  const [filteredData, setFilteredData] = useState<Medicine[]>([])
+
+  useEffect(() => {
+      const q = searchParams.get('q');
+      console.log(q);
+    
+      if (!q) {
+        setFilteredData(medicines);
+      } else {
+        setFilteredData(medicines.filter(item => item.name.toLowerCase().includes(q?.toLowerCase() || '')));
+      }
+    }, [searchParams, medicines]);
 
   if (loading) return <LoadingOverlay isLoading={loading} />;
   if (error) return <p>Error: {error}</p>;
@@ -24,12 +37,12 @@ export default function MedicineTable() {
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900">
       <div className='w-full p-4 flex justify-between items-center'>
-      <div></div>
+      <div className='text-3xl font-medium'>Medicine List</div>
       <Button> <Link to={"/medicine/items/add"}>Add Medicine</Link> </Button>
       </div>
       <div className="max-w-full overflow-x-auto">
         <Table className="w-full text-left border-collapse">
-          <TableHeader>
+          <TableHeader className='bg-gray-100 dark:bg-gray-800'>
             <TableRow>
               {['Medicine ID', 'Name', 'Generic Name', 'Category', 'Form', 'Strength', 'Status'].map((header) => (
                 <th key={header} className="px-5 py-3 font-medium text-gray-500">{header}</th>
@@ -39,7 +52,7 @@ export default function MedicineTable() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {medicines?.map((medicine: Medicine) => (
+            {filteredData?.map((medicine: Medicine) => (
               <TableRow key={medicine._id}>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.medicineCode}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.name}</TableCell>

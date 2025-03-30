@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -7,6 +7,7 @@ import { EyeCloseIcon, EyeIcon } from '../../icons';
 import { AppDispatch, RootState } from '../../features/store';
 import { loginUser } from '../../features/auth/authApi';
 import {Link} from "react-router-dom"
+import { toast } from 'react-toastify';
 
 const validationSchema = Yup.object().shape({
   username: Yup.string().required('Username is required'),
@@ -16,11 +17,27 @@ const validationSchema = Yup.object().shape({
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading,isAuthenticated, error } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = (values: { username: string; password: string }) => {
     dispatch(loginUser(values));
   };
+
+  useEffect(() => {
+    let toastId: number | null = null;
+
+    if (isAuthenticated) {
+      // toastId = 
+      toast.success("Login successful");
+    }
+
+    // return () => {
+    //   if (toastId !== null) {
+    //     toast.dismiss(toastId);
+    //   }
+    // };
+  }, [isAuthenticated]);
+  
 
   return (
     <div className="flex flex-col flex-1">

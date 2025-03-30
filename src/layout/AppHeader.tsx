@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { Link } from "react-router";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router";
 import { useSidebar } from "../context/SidebarContext";
 import { ThemeToggleButton } from "../components/common/ThemeToggleButton";
 import NotificationDropdown from "../components/header/NotificationDropdown";
@@ -8,6 +8,9 @@ import UserDropdown from "../components/header/UserDropdown";
 
 const AppHeader: React.FC = () => {
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
+  const [searchParams,setSearchParams]=useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
 
@@ -30,6 +33,11 @@ const AppHeader: React.FC = () => {
       if ((event.metaKey || event.ctrlKey) && event.key === "k") {
         event.preventDefault();
         inputRef.current?.focus();
+        handleSearch()
+        console.log("Command K pressed");
+      }
+      if(inputRef.current?.value===''){
+        handleSearch()
       }
     };
 
@@ -39,6 +47,17 @@ const AppHeader: React.FC = () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  const handleSearch = () => {
+    const query = inputRef.current?.value.trim();
+    if (query) {
+      // Append query to the current location
+      navigate(`${location.pathname}?q=${encodeURIComponent(query)}`);
+    } else {
+      // Clear search parameter while staying on the same location
+      navigate(location.pathname);
+    }
+  };
 
   return (
     <header className="sticky top-0 flex w-full bg-white border-gray-200 z-80 dark:border-gray-800 dark:bg-gray-900 lg:border-b">

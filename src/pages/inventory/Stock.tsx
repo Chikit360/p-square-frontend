@@ -2,20 +2,23 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
-import Button from '../../components/ui/Button/Button';
+import Button from '../../components/ui/button/Button';
 import { Modal } from '../../components/ui/modal/index';
 import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
-import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table';
+import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/Table';
 import { Medicine } from '../../helpers/interfaces';
+import { useSearchParams } from 'react-router';
 
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const [searchParams,setSearchParams]=useSearchParams();
   const { inventoryData, loading: stockLoader, error: stockError } = useSelector((state: RootState) => state.stock);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
   const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
+  const [filteredData, setFilteredData] = useState<Medicine[]>([])
 
   useEffect(() => {
     if (selectedItem !== null) {
@@ -29,6 +32,20 @@ const Stock: React.FC = () => {
   //     setSelectedItem(medicines[0]);
   //   }
   // }, [medicines]);
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    console.log(q);
+  
+    if (!q) {
+      setFilteredData(medicines);
+    } else {
+      setFilteredData(medicines.filter(item => item.name.toLowerCase().includes(q?.toLowerCase() || '')));
+    }
+  }, [searchParams, medicines]);
+  
+  
+
   if (loading) return <LoadingOverlay isLoading={loading} />;
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
@@ -43,7 +60,7 @@ const Stock: React.FC = () => {
       <div className="w-full h-full flex gap-6">
         {/* Medicine List Section */}
         <div className={`transition-all duration-300 ${selectedItem ? 'w-1/3' : 'w-full'} border border-gray-300 rounded-lg p-4 shadow-sm`}>
-          {medicines?.length === 0 ? (
+          {filteredData?.length === 0 ? (
             <div className="w-full h-full flex flex-col items-center justify-center">
               <p className="text-gray-500">No stock available.</p>
               <Button onClick={() => console.log('Add Inventory')}>Add Inventory</Button>
@@ -60,7 +77,7 @@ const Stock: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {medicines?.map((medicine) => (
+                  {filteredData?.map((medicine) => (
                     <tr
                       key={medicine._id}
                       className={`cursor-pointer transition duration-200 ${String(medicine._id) === String(selectedItem?._id) ? 'bg-blue-100' : 'hover:bg-gray-50'}`}
