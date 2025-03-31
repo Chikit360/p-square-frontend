@@ -71,7 +71,8 @@ export default function MedicineTable() {
                 >
                   <PencilIcon className='dark:text-white' />
                 </Link>
-                <Link to={`/medicine/item/${medicine._id}/delete`}>
+                {/* <Link to={`/medicine/item/${medicine._id}/delete`}> */}
+                <Link to="#">
                 <TrashBinIcon className='dark:text-white' />
                 </Link>
 

@@ -56,6 +56,7 @@ const validationSchema = Yup.object().shape({
 
 const CreateMedicineForm = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { recentCreatedMedicineId } = useSelector((state: RootState) => state.medicine);
   const navigate=useNavigate()
   const [openConfirmationBox, setOpenConfirmationBox] = useState<boolean>(false)
   const { loading } = useSelector((state: RootState) => state.medicine);
@@ -171,7 +172,7 @@ const CreateMedicineForm = () => {
     </div>
    
     <ConfirmationPopup title='Aleart' message='Do you want to add inventory right now' onConfirm={()=>{
-      navigate("/medicine/inventory")
+      navigate(`/medicine/inventory/${recentCreatedMedicineId}/add-update`)
     }} onCancel={()=>setOpenConfirmationBox(false)} isOpen={openConfirmationBox} />
     </>
   );

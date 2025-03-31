@@ -18,16 +18,29 @@ import UpdateStock from "./pages/inventory/UpdateStock";
 import { ToastContainer } from 'react-toastify';
 import UpdateMedicineForm from "./pages/medicine/UpdateMedicine";
 import UserProfiles from "./pages/UserProfiles";
+import useOnlineStatus from "./hooks/useOnlineStatus";
 
 export default function App() {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   const dispatch = useDispatch<AppDispatch>();
+  const isOnline=useOnlineStatus()
 
   useEffect(() => {
     dispatch({ type: 'auth/checkAuth' });
   }, [dispatch]);
 
-  
+  if(isOnline===false){
+    return <div className="flex justify-center items-center h-screen">
+      <h1 className="text-3xl font-bold text-red-500">You are offline. Please check your internet connection.</h1>
+    </div>
+  }
+  if (isAuthenticated === null) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h1 className="text-3xl font-bold">Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <Router>
@@ -54,7 +67,7 @@ export default function App() {
             <Route path="/sell" element={<SellHistory />} />
             <Route path="/sell/add" element={<SellForm />} />
             <Route path="/medicine/inventory" element={<Stock />} />
-            <Route path="/medicine/inventory/:id" element={<UpdateStock />} />
+            <Route path="/medicine/inventory/:id/add-update" element={<UpdateStock />} />
             <Route path="/profile" element={<UserProfiles />} />
           </Route>
         </Route>

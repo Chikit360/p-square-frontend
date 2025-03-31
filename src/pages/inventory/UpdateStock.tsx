@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../features/store';
-import { addOrUpdateStock } from '../../features/stock/stockApi';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../features/store';
+import { addOrUpdateStock, fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
 import { InventoryData } from '../../helpers/interfaces';
+import { useParams } from 'react-router';
 
 
 
@@ -10,26 +11,23 @@ interface UpdateStockProps {
   initialData?: InventoryData;
 }
 
-const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
+const UpdateStock: React.FC<UpdateStockProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
+  const {id}=useParams<{id:string}>();
 
   // Initialize Form Data
-  console.log(initialData)
   const [formData, setFormData] = useState<InventoryData>({
-    medicineId: initialData?.medicineId || '',
-    batchNumber: initialData?.batchNumber || '',
-    manufactureDate: initialData?.manufactureDate
-      ? new Date(initialData.manufactureDate).toISOString().split('T')[0]
-      : '',
-    expiryDate: initialData?.expiryDate
-      ? new Date(initialData.expiryDate).toISOString().split('T')[0]
-      : '',
-    mrp: initialData?.mrp ?? 0,
-    purchasePrice: initialData?.purchasePrice ?? 0,
-    sellingPrice: initialData?.sellingPrice ?? 0,
-    quantityInStock: initialData?.quantityInStock ?? 0,
-    minimumStockLevel: initialData?.minimumStockLevel ?? 0,
-    shelfLocation: initialData?.shelfLocation || '',
+    medicineId:  '',
+    batchNumber: '',
+    manufactureDate:  '',
+    expiryDate:  '',
+    mrp:  0,
+    purchasePrice:  0,
+    sellingPrice:  0,
+    quantityInStock:  0,
+    minimumStockLevel:  0,
+    shelfLocation: '',
   });
 
   // Handle Form Change
@@ -41,6 +39,32 @@ const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
     }));
   };
 
+  useEffect(() => {
+    if (id) {
+   dispatch(fetchInventoryDetailsByMedicineId(id));}
+  }, [dispatch,id])
+
+  useEffect(() => {
+    const initialData = inventoryData.length > 0 ? inventoryData[0] : { medicineId: id || '' };
+    setFormData({
+      medicineId: initialData?.medicineId || '',
+      batchNumber: initialData?.batchNumber || '',
+      manufactureDate: initialData?.manufactureDate
+        ? new Date(initialData.manufactureDate).toISOString().split('T')[0]
+        : '',
+      expiryDate: initialData?.expiryDate
+        ? new Date(initialData.expiryDate).toISOString().split('T')[0]
+        : '',
+      mrp: initialData?.mrp ?? 0,
+      purchasePrice: initialData?.purchasePrice ?? 0,
+      sellingPrice: initialData?.sellingPrice ?? 0,
+      quantityInStock: initialData?.quantityInStock ?? 0,
+      minimumStockLevel: initialData?.minimumStockLevel ?? 0,
+      shelfLocation: initialData?.shelfLocation || '',
+    })
+  }, [dispatch, inventoryData]);
+  
+  
   // Submit Handler
   const handleSubmit = async () => {
     if (!formData.medicineId) {
@@ -60,7 +84,7 @@ const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">
-        {initialData?.medicineId ? 'Update Stock' : 'Add New Stock'}
+        {inventoryData.length>0 ? 'Update Stock' : 'Add New Stock'}
       </h1>
 
       {/* Form Grid Layout with 3 Columns */}
@@ -74,7 +98,7 @@ const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
             className="border p-2 w-full"
             value={formData.medicineId}
             onChange={handleChange}
-            disabled={!!initialData?.medicineId}
+            disabled={!!formData?.medicineId}
           />
         </div>
 
@@ -111,7 +135,7 @@ const UpdateStock: React.FC<UpdateStockProps> = ({ initialData }) => {
         onClick={handleSubmit}
         disabled={!formData.medicineId}
       >
-        {initialData?.medicineId ? 'Update Stock' : 'Add Stock'}
+        {inventoryData.length>0 ? 'Update Stock' : 'Add Stock'}
       </button>
     </div>
   );

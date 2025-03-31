@@ -84,7 +84,7 @@ const UpdateMedicineForm = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
                         {Object.keys(initialValues)
-                            .filter((key) => !['_id', 'createdAt', 'updatedAt', '__v'].includes(key))
+                            .filter((key) => !['_id', 'createdAt', 'updatedAt', '__v','totalQuantity','batchNumber'].includes(key))
                             .map((key) => (
                                 <div key={key} className="mb-4">
                                     <Label>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}</Label>
@@ -130,7 +130,7 @@ const UpdateMedicineForm = () => {
                                         </div>
 
                                     ) : (
-                                        <Field disabled={key === "medicineCode"} name={key} className={`h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${"text-gray-400 dark:text-gray-400"
+                                        <Field disabled={key === "medicineCode"} name={key} className={`h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${key==='medicineCode'? "bg-blue-200":"bg-transparent"} ${"text-gray-400 dark:text-gray-400"
                                             }`} />
                                     )}
 

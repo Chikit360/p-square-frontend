@@ -8,7 +8,7 @@ import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { Table, TableBody, TableHeader, TableRow } from '../../components/ui/table';
 import { Medicine } from '../../helpers/interfaces';
-import { useSearchParams } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 
 const Stock: React.FC = () => {
@@ -101,7 +101,7 @@ const Stock: React.FC = () => {
 
             <div className='flex justify-between items-center mb-6'>
               <h2 className="text-2xl font-semibold text-gray-800">Medicine Details</h2>
-              <Button className='float-right' onClick={() => setIsModelOpen(true)}>Update</Button>
+              <Button className='float-right' onClick={() => setIsModelOpen(true)}> <Link to={`/medicine/inventory/${selectedItem._id}/add-update`}>Add/Update</Link> </Button>
             </div>
 
             {/* Medicine Details */}

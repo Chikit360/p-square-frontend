@@ -329,12 +329,22 @@ const AppSidebar: React.FC = () => {
               />
             </>
           ) : (
+            <>
             <img
+            className="dark:hidden"
               src="/images/logo/ThunderGits_Logos/3.png"
               alt="Logo"
               width={32}
               height={32}
             />
+            <img
+            className="dark:block"
+              src="/images/logo/ThunderGits_Logos/4.png"
+              alt="Logo"
+              width={32}
+              height={32}
+            />
+            </>
           )}
         </Link>
       </div>

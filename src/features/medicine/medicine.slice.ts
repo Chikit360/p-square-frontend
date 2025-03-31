@@ -30,6 +30,7 @@ interface Medicine {
 interface MedicineState {
   medicines: Medicine[];
   searchResult:Medicine[],
+  recentCreatedMedicineId: string | null;
   selectedMedicine: Medicine | null;
   success:boolean,
   loading: boolean;
@@ -39,6 +40,7 @@ interface MedicineState {
 const initialState: MedicineState = {
   medicines: [],
   searchResult:[],
+  recentCreatedMedicineId:null,
   selectedMedicine: null,
   success: false,
   loading: false,
@@ -83,6 +85,7 @@ const medicineSlice = createSlice({
       })
       .addCase(createMedicine.fulfilled, (state, action) => {
         state.medicines.push(action.payload.data);
+        state.recentCreatedMedicineId = action.payload.data._id;
         state.success = true;
         state.loading = false;
       })
