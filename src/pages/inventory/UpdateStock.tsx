@@ -13,7 +13,7 @@ interface UpdateStockProps {
 
 const UpdateStock: React.FC<UpdateStockProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
+  const { inventoryData, } = useSelector((state: RootState) => state.stock);
   const {id}=useParams<{id:string}>();
 
   // Initialize Form Data
