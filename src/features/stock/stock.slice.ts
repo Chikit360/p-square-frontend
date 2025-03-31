@@ -58,45 +58,51 @@ const stockSlice = createSlice({
       .addCase(addOrUpdateStock.fulfilled, (state, action: PayloadAction<any>) => {
         const updatedStock = action.payload.data;
       
-        // Check if the inventory with the same medicineId and expiryDate exists
+        if (!updatedStock.batchNumber) {
+          console.error('Batch number is required');
+          return;
+        }
+      
+        // Check for existing inventory with the same batchNumber and expiryDate
         const existingInventoryIndex = state.inventoryData?.findIndex(
-          (stock) => stock.medicineId === updatedStock.medicineId &&
+          (stock) => stock.batchNumber === updatedStock.batchNumber &&
                      stock.expiryDate === updatedStock.expiryDate
         );
       
         if (existingInventoryIndex !== -1) {
-          // Update existing inventory by adding quantity
-          state.inventoryData[existingInventoryIndex]=updatedStock;
+          // Update existing inventory
+          state.inventoryData[existingInventoryIndex] = updatedStock;
         } else {
-          // Check if any inventory exists for the given medicineId
-          const existingMedicineIndex = state.inventoryData?.findIndex(
-            (stock) => stock.medicineId === updatedStock.medicineId
+          // Check if any inventory exists with the same batchNumber
+          const existingInventoryItemIndex = state.inventoryData?.findIndex(
+            (stock) => stock.batchNumber === updatedStock.batchNumber
           );
       
-          if (existingMedicineIndex === -1) {
+          if (existingInventoryItemIndex === -1) {
             // No inventory exists, add as new inventory
             state.inventoryData?.push(updatedStock);
           } else {
             // Create a new inventory entry if expiryDate is different
-            const existingMedicine = state.inventoryData?.[existingMedicineIndex];
+            const existingInventoryItem = state.inventoryData[existingInventoryItemIndex];
       
             const newInventory = {
               ...updatedStock,
-              batchNumber: updatedStock.batchNumber || existingMedicine?.batchNumber || '',
-              mrp: updatedStock.mrp ?? existingMedicine?.mrp ?? 0,
-              purchasePrice: updatedStock.purchasePrice ?? existingMedicine?.purchasePrice ?? 0,
-              sellingPrice: updatedStock.sellingPrice ?? existingMedicine?.sellingPrice ?? 0,
-              manufactureDate: updatedStock.manufactureDate || existingMedicine?.manufactureDate,
-              minimumStockLevel: updatedStock.minimumStockLevel ?? existingMedicine?.minimumStockLevel ?? 0,
-              shelfLocation: updatedStock.shelfLocation || existingMedicine?.shelfLocation || '',
+              batchNumber: updatedStock.batchNumber || existingInventoryItem.batchNumber,
+              mrp: updatedStock.mrp ?? existingInventoryItem.mrp,
+              purchasePrice: updatedStock.purchasePrice ?? existingInventoryItem.purchasePrice,
+              sellingPrice: updatedStock.sellingPrice ?? existingInventoryItem.sellingPrice,
+              manufactureDate: updatedStock.manufactureDate || existingInventoryItem.manufactureDate,
+              minimumStockLevel: updatedStock.minimumStockLevel ?? existingInventoryItem.minimumStockLevel,
+              shelfLocation: updatedStock.shelfLocation || existingInventoryItem.shelfLocation,
             };
       
             state.inventoryData?.push(newInventory);
           }
         }
-        
+      
         state.loading = false;
       })
+      
       
       
       .addCase(addOrUpdateStock.rejected, (state, action) => {

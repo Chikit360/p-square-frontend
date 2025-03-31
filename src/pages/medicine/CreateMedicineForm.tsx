@@ -161,7 +161,7 @@ const CreateMedicineForm = () => {
               <button
                 type="button"
                 onClick={() => setValues(generateFakeData())}
-                className="bg-gray-500 text-white py-2 px-4 rounded hidden"
+                className="bg-gray-500 text-white py-2 px-4 rounded "
               >
                 Generate Fake Data
               </button>

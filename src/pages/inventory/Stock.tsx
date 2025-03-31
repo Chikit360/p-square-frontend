@@ -3,8 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
 import Button from '../../components/ui/button/Button';
-import { Modal } from '../../components/ui/modal/index';
-import UpdateStock from './UpdateStock';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { Table, TableBody, TableHeader, TableRow } from '../../components/ui/table';
 import { Medicine } from '../../helpers/interfaces';
@@ -17,7 +15,6 @@ const Stock: React.FC = () => {
   const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
-  const [isModelOpen, setIsModelOpen] = useState<boolean>(false);
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
 
   useEffect(() => {
@@ -101,7 +98,7 @@ const Stock: React.FC = () => {
 
             <div className='flex justify-between items-center mb-6'>
               <h2 className="text-2xl font-semibold text-gray-800">Medicine Details</h2>
-              <Button className='float-right' onClick={() => setIsModelOpen(true)}> <Link to={`/medicine/inventory/${selectedItem._id}/add-update`}>Add/Update</Link> </Button>
+              <Button className='float-right'> <Link to={`/medicine/inventory/${selectedItem._id}/add-update`}>Add/Update</Link> </Button>
             </div>
 
             {/* Medicine Details */}
@@ -181,15 +178,6 @@ const Stock: React.FC = () => {
         )}
 
       </div>
-
-      {/* Update Stock Modal */}
-      <Modal className='p-5 my-10 mx-20' isOpen={isModelOpen} onClose={() => setIsModelOpen(false)}>
-        {inventoryData.length > 0 ? (
-          <UpdateStock initialData={{ ...inventoryData[0] }} />
-        ) : (
-          <UpdateStock initialData={{ medicineId: selectedItem?._id || '' }} />
-        )}
-      </Modal>
 
     </div>
 
