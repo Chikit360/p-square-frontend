@@ -24,9 +24,9 @@ export default function AuthLayout({
                   alt="Logo"
                 />
               </Link> */}
-              <div className="text-4xl text-white font-bold">Medical ERP</div>
+              <div className="text-4xl text-white font-bold">Chikit ThunderGits</div>
               <p className="text-center text-gray-400 dark:text-white/60">
-                Free and Open-Source Tailwind CSS Admin Dashboard Template
+              Chikit Medical ERP by ThunderGits is a pharmacy management system that streamlines medicine inventory, billing, and sales for medical stores.
               </p>
             </div>
           </div>
