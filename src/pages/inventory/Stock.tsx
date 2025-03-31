@@ -11,7 +11,7 @@ import { Link, useSearchParams } from 'react-router';
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const [searchParams]=useSearchParams();
+  const [searchParams] = useSearchParams();
   const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
@@ -33,15 +33,15 @@ const Stock: React.FC = () => {
   useEffect(() => {
     const q = searchParams.get('q');
     console.log(q);
-  
+
     if (!q) {
       setFilteredData(medicines);
     } else {
       setFilteredData(medicines.filter(item => item.name.toLowerCase().includes(q?.toLowerCase() || '')));
     }
   }, [searchParams, medicines]);
-  
-  
+
+
 
   if (loading) return <LoadingOverlay isLoading={loading} />;
   if (error) return <p className="text-red-500">Error: {error}</p>;
@@ -50,7 +50,7 @@ const Stock: React.FC = () => {
 
 
   return (
-    <div className="p-6 h-full w-full">
+    <div className="p-6 h-full w-full ">
       <h1 className="text-3xl font-bold mb-6">Inventory Management</h1>
 
       {/* Layout Section */}
@@ -77,7 +77,7 @@ const Stock: React.FC = () => {
                   {filteredData?.map((medicine) => (
                     <tr
                       key={medicine._id}
-                      className={`cursor-pointer transition duration-200 ${String(medicine._id) === String(selectedItem?._id) ? 'bg-blue-100' : 'hover:bg-gray-50'}`}
+                      className={`cursor-pointer transition duration-200 ${String(medicine._id) === String(selectedItem?._id) ? 'bg-blue-100' : 'hover:bg-gray-50 hover:text-black'}`}
                       onClick={() => setSelectedItem(medicine)}
                     >
                       <td className="p-3 border border-gray-200">{medicine.name}</td>
@@ -97,7 +97,7 @@ const Stock: React.FC = () => {
           <div className="w-2/3 border bg-white border-gray-300 dark:bg-gray-900 rounded-lg p-6 shadow-sm relative">
 
             <div className='flex justify-between items-center mb-6'>
-              <h2 className="text-2xl font-semibold text-gray-800">Medicine Details</h2>
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Medicine Details</h2>
               <Button className='float-right'> <Link to={`/medicine/inventory/${selectedItem._id}/add-update`}>Add/Update</Link> </Button>
             </div>
 
@@ -109,10 +109,10 @@ const Stock: React.FC = () => {
                   .filter(([key]) => !['createdAt', 'updatedAt', '_id', '__v'].includes(key))
                   .map(([key, value]) => (
                     <div key={key} className="border p-3 rounded-lg shadow-sm bg-white dark:bg-gray-900">
-                      <p className="text-gray-800 font-medium">
+                      <p className="text-gray-800 font-medium dark:text-white">
                         {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
                       </p>
-                      <p className="text-gray-600">
+                      <p className="text-gray-600 dark:text-white">
                         {typeof value === 'boolean' ? (value ? 'Yes' : 'No') : value || 'N/A'}
                       </p>
                     </div>
@@ -121,52 +121,52 @@ const Stock: React.FC = () => {
 
               {/* Inventory Details */}
               <br />
-              <div className='w-full text-xs'>
-                <h2 className="text-xl font-semibold mb-4 text-gray-800">Inventory Details</h2>
+              <div className='w-2/3 text-xs m-auto '>
+                <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Inventory Details</h2>
                 {inventoryData.length === 0 ? (
                   <p className="text-gray-500">No inventory details available.</p>
                 ) : (
                   <div className='overflow-hidden w-full h-full'>
                     <div className="w-full overflow-x-auto">
-  <Table className="min-w-[1000px] border-collapse border border-gray-300">
-    <TableHeader className="sticky top-0 bg-gray-100">
-      <TableRow>
-        <th className="border border-gray-300 p-3 text-left">Batch Number</th>
-        <th className="border border-gray-300 p-3 text-left">Manufacture Date</th>
-        <th className="border border-gray-300 p-3 text-left">Expiry Date</th>
-        <th className="border border-gray-300 p-3 text-left">MRP</th>
-        <th className="border border-gray-300 p-3 text-left">Purchase Price</th>
-        <th className="border border-gray-300 p-3 text-left">Selling Price</th>
-        <th className="border border-gray-300 p-3 text-left">Quantity</th>
-        <th className="border border-gray-300 p-3 text-left">Min Stock Level</th>
-        <th className="border border-gray-300 p-3 text-left">Shelf Location</th>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {stockLoader ? (
-        <TableRow>
-          <td className="h-[100px] text-center p-2" colSpan={9}>Loading...</td>
-        </TableRow>
-      ) : inventoryData.map((stock, index) => (
-        <tr key={index} className="hover:bg-gray-50 transition">
-          <td className="border border-gray-300 p-3">{stock.batchNumber || '-'}</td>
-          <td className="border border-gray-300 p-3">
-            {stock.manufactureDate ? new Date(stock.manufactureDate).toLocaleDateString() : '-'}
-          </td>
-          <td className="border border-gray-300 p-3">
-            {stock.expiryDate ? new Date(stock.expiryDate).toLocaleDateString() : '-'}
-          </td>
-          <td className="border border-gray-300 p-3">{stock.mrp}</td>
-          <td className="border border-gray-300 p-3">{stock.purchasePrice}</td>
-          <td className="border border-gray-300 p-3">{stock.sellingPrice}</td>
-          <td className="border border-gray-300 p-3">{stock.quantityInStock}</td>
-          <td className="border border-gray-300 p-3">{stock.minimumStockLevel}</td>
-          <td className="border border-gray-300 p-3">{stock.shelfLocation || '-'}</td>
-        </tr>
-      ))}
-    </TableBody>
-  </Table>
-</div>
+                      <Table className="min-w-[1000px] border-collapse border border-gray-300">
+                        <TableHeader className="sticky top-0 bg-gray-100">
+                          <TableRow>
+                            <th className="border border-gray-300 p-3 text-left">Batch Number</th>
+                            <th className="border border-gray-300 p-3 text-left">Manufacture Date</th>
+                            <th className="border border-gray-300 p-3 text-left">Expiry Date</th>
+                            <th className="border border-gray-300 p-3 text-left">MRP</th>
+                            <th className="border border-gray-300 p-3 text-left">Purchase Price</th>
+                            <th className="border border-gray-300 p-3 text-left">Selling Price</th>
+                            <th className="border border-gray-300 p-3 text-left">Quantity</th>
+                            <th className="border border-gray-300 p-3 text-left">Min Stock Level</th>
+                            <th className="border border-gray-300 p-3 text-left">Shelf Location</th>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {stockLoader ? (
+                            <TableRow>
+                              <td className="h-[100px] text-center p-2" colSpan={9}>Loading...</td>
+                            </TableRow>
+                          ) : inventoryData.map((stock, index) => (
+                            <tr key={index} className="hover:bg-gray-50 transition">
+                              <td className="border border-gray-300 p-3">{stock.batchNumber || '-'}</td>
+                              <td className="border border-gray-300 p-3">
+                                {stock.manufactureDate ? new Date(stock.manufactureDate).toLocaleDateString() : '-'}
+                              </td>
+                              <td className="border border-gray-300 p-3">
+                                {stock.expiryDate ? new Date(stock.expiryDate).toLocaleDateString() : '-'}
+                              </td>
+                              <td className="border border-gray-300 p-3">{stock.mrp}</td>
+                              <td className="border border-gray-300 p-3">{stock.purchasePrice}</td>
+                              <td className="border border-gray-300 p-3">{stock.sellingPrice}</td>
+                              <td className="border border-gray-300 p-3">{stock.quantityInStock}</td>
+                              <td className="border border-gray-300 p-3">{stock.minimumStockLevel}</td>
+                              <td className="border border-gray-300 p-3">{stock.shelfLocation || '-'}</td>
+                            </tr>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
 
                   </div>
                 )}
