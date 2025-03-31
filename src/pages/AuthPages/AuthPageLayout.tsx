@@ -24,10 +24,9 @@ export default function AuthLayout({
                   alt="Logo"
                 />
               </Link> */}
-              <div className="text-4xl text-white font-bold uppercase ">Chikit</div>
+              <div className="text-4xl text-white font-bold">Chikit ThunderGits</div>
               <p className="text-center text-gray-400 dark:text-white/60">
-                We make your task easy and simple. We are here to help you
-                manage your medical inventory and sales. 
+              Chikit Medical ERP by ThunderGits is a pharmacy management system that streamlines medicine inventory, billing, and sales for medical stores.
               </p>
             </div>
           </div>
