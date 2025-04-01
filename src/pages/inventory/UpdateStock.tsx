@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
-import { addOrUpdateStock, fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
+import { addOrUpdateInventory, fetchInventoryDetailsByMedicineId } from '../../features/inventory/inventoryApi';
 import { InventoryData } from '../../helpers/interfaces';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 
 
@@ -13,7 +13,8 @@ interface UpdateStockProps {
 
 const UpdateStock: React.FC<UpdateStockProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { inventoryData, } = useSelector((state: RootState) => state.stock);
+  const navigate=useNavigate()
+  const { inventoryData, } = useSelector((state: RootState) => state.inventory);
   const {id}=useParams<{id:string}>();
 
   // Initialize Form Data
@@ -73,7 +74,9 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
     }
 
     try {
-      await dispatch(addOrUpdateStock(formData));
+      await dispatch(addOrUpdateInventory(formData));
+      // this navigation will handle proper but for now, only for client purpose 
+      navigate('/medicine/items/add')
       alert('Stock updated successfully!');
     } catch (error) {
       console.error('Error updating stock:', error);

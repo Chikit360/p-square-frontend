@@ -52,6 +52,8 @@ const validationSchema = Yup.object().shape({
   strength: Yup.string().oneOf(STRENGTH_ENUM, 'Invalid strength').required('Strength is required'),
   unit: Yup.string().oneOf(UNIT_ENUM, 'Invalid unit').required('Unit is required'),
   prescriptionRequired: Yup.boolean(),
+  status: Yup.string().oneOf(STATUS_ENUM, 'Invalid status').required('Status is required'),
+  notes: Yup.string(),
 });
 
 const CreateMedicineForm = () => {
@@ -71,7 +73,11 @@ const CreateMedicineForm = () => {
     resetForm();
   };
 
-  
+  const isFieldRequired = (key: keyof typeof initialValues) => {
+    const fieldSchema = (validationSchema.fields as Record<string, any>)[key]; // Use the key as part of the strongly typed validation schema
+    console.log(key,(validationSchema.fields as Record<string, any>)[key])
+    return fieldSchema && fieldSchema.tests.some((test: any) => test.OPTIONS.name === 'required');
+  };
 
   return (
     <>
@@ -86,10 +92,13 @@ const CreateMedicineForm = () => {
         {({ isSubmitting, setValues }) => (
           <Form>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {Object.keys(initialValues).map((key) => (
+              {Object.keys(initialValues).map((key) => {
+                const required = isFieldRequired(key as keyof typeof initialValues);
+                return (
                 <div key={key} className="mb-4">
                   <Label>
                     {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
+                    {required && <span className="text-red-500">*</span>}  {/* Add the asterisk */}
                   </Label>
                   {key === 'manufactureDate' || key === 'expiryDate' ? (
                     <Field type="date" name={key} className={`h-11 w-full appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
@@ -147,7 +156,7 @@ const CreateMedicineForm = () => {
                   )}
                   <ErrorMessage name={key} component="div" className="text-red-500 text-sm" />
                 </div>
-              ))}
+              )})}
             </div>
 
             <div className="flex space-x-4 mt-4">

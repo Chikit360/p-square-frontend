@@ -111,12 +111,12 @@ const AppHeader: React.FC = () => {
           <Link to="/" className="lg:hidden">
             <img
               className="dark:hidden"
-              src="./images/logo/ThunderGits_Logos/1.png"
+              src="/images/logo/ThunderGits_Logos/1.png"
               alt="Logo"
             />
             <img
               className="hidden dark:block"
-              src="./images/logo/ThunderGits_Logos/2.png"
+              src="/images/logo/ThunderGits_Logos/2.png"
               alt="Logo"
             />
           </Link>

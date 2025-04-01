@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
 import authReducer from '../features/auth/user.slice'
 import medicineReducer from '../features/medicine/medicine.slice'
-import inventoryReducer from '../features/inventory/inventory.slice'
+import saleReducer from './sale/sale.slice'
 import activeMedicineReducer from '../features/medicine/activeMedicine.slice'
 import authMiddleware from './middlewares/authMiddleware'
-import stockReducer from '../features/stock/stock.slice';
+import inventoryReducer from './inventory/inventory.slice';
 
 const store = configureStore({
   reducer: {
@@ -12,7 +12,7 @@ const store = configureStore({
     medicine:medicineReducer,
     inventory:inventoryReducer,
     activeMedicines:activeMedicineReducer,
-    stock: stockReducer,
+    sales: saleReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authMiddleware),

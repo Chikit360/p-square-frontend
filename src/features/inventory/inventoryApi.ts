@@ -1,28 +1,58 @@
-// store/sell/sellApi.ts
-import { createAsyncThunk } from '@reduxjs/toolkit';
+import {  createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../utils/axiosInstance';
-// Create Sale
-export const createSale = createAsyncThunk(
-    'sell/createSale',
-    async (saleData: any, { rejectWithValue }) => {
-      try {
-        const response = await axiosInstance.post('/stocks', saleData);
-        return response.data;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to create sale');
-      }
+
+
+export const fetchInventoryDetails = createAsyncThunk(
+    'inventory/fetchInventoryDetails',
+    async () => {
+      const response = await axiosInstance.get("/inventories");
+    return response.data;
     }
   );
-  
-  // Get All Sales
-  export const getAllSales = createAsyncThunk(
-    'sell/getAllSales',
-    async (_, { rejectWithValue }) => {
-      try {
-        const response = await axiosInstance.get('/stocks',);
-        return response.data;
-      } catch (error: any) {
-        return rejectWithValue(error.response?.data?.message || 'Failed to fetch sales');
-      }
+
+
+  // Add or update stock
+// Define Type for Inventory Data
+interface InventoryData {
+  medicineId: string;
+  batchNumber?: string;
+  manufactureDate?: string;
+  expiryDate?: string;
+  mrp?: number;
+  purchasePrice?: number;
+  sellingPrice?: number;
+  quantityInStock?: number;
+  minimumStockLevel?: number;
+  shelfLocation?: string;
+}
+
+
+// Add or Update Stock Thunk
+export const addOrUpdateInventory = createAsyncThunk(
+  'inventory/addOrUpdateInventory',
+  async (stockData: InventoryData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/inventories', stockData);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Error adding or updating stock');
     }
-  );
+  }
+);
+
+// Thunk to Fetch Inventory Details by Medicine ID
+export const fetchInventoryDetailsByMedicineId = createAsyncThunk<
+  InventoryData[],
+  string,
+  { rejectValue: string }
+>(
+  'inventory/fetchInventoryDetailsByMedicineId',
+  async (medicineId, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get(`/inventories/medicine-id/${medicineId}`);
+      return response.data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Error fetching inventory details');
+    }
+  }
+);

@@ -72,6 +72,12 @@ const UpdateMedicineForm = () => {
         }
     };
 
+    const isFieldRequired = (key: keyof typeof initialValues) => {
+        const fieldSchema = (validationSchema.fields as Record<string, any>)[key]; // Use the key as part of the strongly typed validation schema
+       
+        return fieldSchema && fieldSchema.tests.some((test: any) => test.OPTIONS.name === 'required');
+      };
+
     // Show Loader or Error
     if (loading) return <LoadingOverlay isLoading={loading} />;
     if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -85,10 +91,14 @@ const UpdateMedicineForm = () => {
 
                         {Object.keys(initialValues)
                             .filter((key) => !['_id', 'createdAt', 'updatedAt', '__v','totalQuantity','batchNumber'].includes(key))
-                            .map((key) => (
+                            .map((key) => {
+                                const required = isFieldRequired(key as keyof typeof initialValues);
+                                return(
                                 <div key={key} className="mb-4">
-                                    <Label>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}</Label>
+                                    <Label>{key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}
+                                    {required && <span className="text-red-500">*</span>}  {/* Add the asterisk */}
 
+                                    </Label>
                                     {/* Conditional Field Rendering */}
                                     {key === 'prescriptionRequired' ? (
                                         <Label className="flex items-center cursor-pointer">
@@ -136,7 +146,7 @@ const UpdateMedicineForm = () => {
 
                                     <ErrorMessage name={key} component="div" className="text-red-500 text-sm" />
                                 </div>
-                            ))}
+                            )})}
                     </div>
                     <button type="submit" disabled={isSubmitting} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
                         {isSubmitting ? 'Updating...' : 'Update Medicine'}

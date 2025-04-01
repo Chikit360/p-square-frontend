@@ -34,7 +34,7 @@ export default function MedicineTable() {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-gray-900">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:bg-white/[0.03] dark:border-gray-900">
       <div className='w-full p-4 flex justify-between items-center'>
       <div className='text-3xl font-medium'>Medicine List</div>
       <Button> <Link to={"/medicine/items/add"}>Add Medicine</Link> </Button>
@@ -46,15 +46,15 @@ export default function MedicineTable() {
               {['Medicine ID', 'Name', 'Generic Name', 'Category', 'Form', 'Strength', 'Status'].map((header) => (
                 <th key={header} className="px-5 py-3 font-medium text-gray-500">{header}</th>
               ))}
-              <th>Action</th>
+              <th className='px-5 py-3 font-medium text-gray-500'>Action</th>
               
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData?.map((medicine: Medicine) => (
-              <TableRow key={medicine._id}>
+              <TableRow className='border-gray-200 dark:border-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800 ' key={medicine._id}>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.medicineCode}</TableCell>
-                <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.name}</TableCell>
+                <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300" ><p title={medicine.name} className='whitespace-nowrap max-w-[100px] text-ellipsis overflow-hidden'>{medicine.name}</p></TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.genericName}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.category}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.form}</TableCell>
@@ -64,7 +64,9 @@ export default function MedicineTable() {
                     medicine.status === 'active' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                   }`}>{medicine.status}</span>
                 </TableCell>
-                <TableCell className='flex gap-2 justify-center items-center'>
+                <TableCell className=''>
+                  <div className='w-full h-full flex gap-2 justify-around items-center'>
+
                 <Link to={`/medicine/item/${medicine._id}/edit`} 
                
                 
@@ -75,6 +77,7 @@ export default function MedicineTable() {
                 <Link to="#">
                 <TrashBinIcon className='dark:text-white' />
                 </Link>
+                  </div>
 
                 </TableCell>
                 

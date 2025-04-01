@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
-import { fetchInventoryDetailsByMedicineId } from '../../features/stock/stockApi';
+import { fetchInventoryDetailsByMedicineId } from '../../features/inventory/inventoryApi';
 import Button from '../../components/ui/button/Button';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { Table, TableBody, TableHeader, TableRow } from '../../components/ui/table';
@@ -12,7 +12,7 @@ import { Link, useSearchParams } from 'react-router';
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [searchParams] = useSearchParams();
-  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.stock);
+  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.inventory);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
@@ -50,40 +50,40 @@ const Stock: React.FC = () => {
 
 
   return (
-    <div className="p-6 h-full w-full ">
+    <div className="w-full">
       <h1 className="text-3xl font-bold mb-6">Inventory Management</h1>
 
       {/* Layout Section */}
-      <div className="w-full h-full flex gap-6">
+      <div className="w-full h-full flex justify-between items-center gap-1">
         {/* Medicine List Section */}
-        <div className={`transition-all duration-300 ${selectedItem ? 'w-1/3' : 'w-full'} border border-gray-300 rounded-lg p-4 shadow-sm`}>
+        <div className={`transition-all duration-300 ${selectedItem ? 'w-0 md:w-1/3' : 'w-full'} bg-white dark:bg-white/[0.03] border-gray-200 dark:border-gray-900 rounded-lg shadow-sm`}>
           {filteredData?.length === 0 ? (
             <div className="w-full h-full flex flex-col items-center justify-center">
               <p className="text-gray-500">No stock available.</p>
               <Button onClick={() => console.log('Add Inventory')}>Add Inventory</Button>
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-900 max-h-[calc(100vh-200px)] overflow-x-auto overflow-y-auto">
-              <table className="min-w-full border-collapse border border-gray-200">
-                <thead className="sticky -top-2 bg-gray-100 dark:bg-gray-900">
+            <div className=" max-h-[calc(100vh-200px)] overflow-x-auto overflow-y-auto rounded-lg">
+              <table className="min-w-full border-collapse">
+                <thead className="bg-gray-100 dark:bg-gray-800">
                   <tr>
-                    <th className="p-3 text-left border border-gray-200">Name</th>
-                    <th className="p-3 text-left border border-gray-200">Batch Number</th>
-                    <th className="p-3 text-left border border-gray-200">Category</th>
-                    <th className="p-3 text-left border border-gray-200">Stock</th>
+                    <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Name</th>
+                    <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Batch Number</th>
+                    <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Category</th>
+                    <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Stock</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody >
                   {filteredData?.map((medicine) => (
                     <tr
                       key={medicine._id}
-                      className={`cursor-pointer transition duration-200 ${String(medicine._id) === String(selectedItem?._id) ? 'bg-blue-100' : 'hover:bg-gray-50 hover:text-black'}`}
+                      className={`mx-1 cursor-pointer transition duration-200 ${String(medicine._id) === String(selectedItem?._id) ? 'bg-gray-200 dark:bg-gray-800' : 'hover:bg-gray-200 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white'}`}
                       onClick={() => setSelectedItem(medicine)}
                     >
-                      <td className="p-3 border border-gray-200">{medicine.name}</td>
-                      <td className="p-3 border border-gray-200">{medicine.batchNumber || 'N/A'}</td>
-                      <td className="p-3 border border-gray-200">{medicine.category}</td>
-                      <td className="p-3 border border-gray-200">{medicine.totalQuantity}</td>
+                      <td className="p-3">{medicine.name}</td>
+                      <td className="p-3">{medicine.batchNumber || 'N/A'}</td>
+                      <td className="p-3">{medicine.category}</td>
+                      <td className="p-3">{medicine.totalQuantity}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -94,7 +94,7 @@ const Stock: React.FC = () => {
 
         {/* Medicine Details & Inventory Details Section */}
         {selectedItem && (
-          <div className="w-2/3 border bg-white border-gray-300 dark:bg-gray-900 rounded-lg p-6 shadow-sm relative">
+          <div className="w-full md:w-2/3 bg-white dark:bg-white/[0.03] border-gray-200 dark:border-gray-900 rounded-lg p-6 shadow-sm relative">
 
             <div className='flex justify-between items-center mb-6'>
               <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Medicine Details</h2>
@@ -102,9 +102,9 @@ const Stock: React.FC = () => {
             </div>
 
             {/* Medicine Details */}
-            <div className=" bg-white dark:bg-gray-900 w-full mb-8 text-gray-700  max-h-[calc(100vh-300px)] overflow-y-auto">
+            <div className="w-full mb-8 text-gray-700  max-h-[calc(100vh-300px)] overflow-y-auto">
 
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2'>
+              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-2 p-5'>
                 {Object.entries(selectedItem)
                   .filter(([key]) => !['createdAt', 'updatedAt', '_id', '__v'].includes(key))
                   .map(([key, value]) => (
@@ -121,25 +121,25 @@ const Stock: React.FC = () => {
 
               {/* Inventory Details */}
               <br />
-              <div className='w-2/3 text-xs m-auto '>
+              <div className='w-full text-theme-xs leading-tight m-auto '>
                 <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Inventory Details</h2>
                 {inventoryData.length === 0 ? (
                   <p className="text-gray-500">No inventory details available.</p>
                 ) : (
                   <div className='overflow-hidden w-full h-full'>
                     <div className="w-full overflow-x-auto">
-                      <Table className="min-w-[1000px] border-collapse border border-gray-300">
-                        <TableHeader className="sticky top-0 bg-gray-100">
+                      <Table className="border-collapse">
+                        <TableHeader className="sticky top-0 dark:text-white bg-gray-100 dark:bg-gray-800 ">
                           <TableRow>
-                            <th className="border border-gray-300 p-3 text-left">Batch Number</th>
-                            <th className="border border-gray-300 p-3 text-left">Manufacture Date</th>
-                            <th className="border border-gray-300 p-3 text-left">Expiry Date</th>
-                            <th className="border border-gray-300 p-3 text-left">MRP</th>
-                            <th className="border border-gray-300 p-3 text-left">Purchase Price</th>
-                            <th className="border border-gray-300 p-3 text-left">Selling Price</th>
-                            <th className="border border-gray-300 p-3 text-left">Quantity</th>
-                            <th className="border border-gray-300 p-3 text-left">Min Stock Level</th>
-                            <th className="border border-gray-300 p-3 text-left">Shelf Location</th>
+                            <th className="text-left px-2 text-wrap py-3 font-medium text-gray-500">Batch Number</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Manufacture Date</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Expiry Date</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">MRP</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Purchase Price</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Selling Price</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Quantity</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Min Stock Level</th>
+                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Shelf Location</th>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -148,20 +148,20 @@ const Stock: React.FC = () => {
                               <td className="h-[100px] text-center p-2" colSpan={9}>Loading...</td>
                             </TableRow>
                           ) : inventoryData.map((stock, index) => (
-                            <tr key={index} className="hover:bg-gray-50 transition">
-                              <td className="border border-gray-300 p-3">{stock.batchNumber || '-'}</td>
-                              <td className="border border-gray-300 p-3">
+                            <tr key={index} className="hover:bg-gray-200 transition dark:hover:bg-gray-800 dark:text-white">
+                              <td className=" p-3">{stock.batchNumber || '-'}</td>
+                              <td className=" p-3">
                                 {stock.manufactureDate ? new Date(stock.manufactureDate).toLocaleDateString() : '-'}
                               </td>
-                              <td className="border border-gray-300 p-3">
+                              <td className=" p-3">
                                 {stock.expiryDate ? new Date(stock.expiryDate).toLocaleDateString() : '-'}
                               </td>
-                              <td className="border border-gray-300 p-3">{stock.mrp}</td>
-                              <td className="border border-gray-300 p-3">{stock.purchasePrice}</td>
-                              <td className="border border-gray-300 p-3">{stock.sellingPrice}</td>
-                              <td className="border border-gray-300 p-3">{stock.quantityInStock}</td>
-                              <td className="border border-gray-300 p-3">{stock.minimumStockLevel}</td>
-                              <td className="border border-gray-300 p-3">{stock.shelfLocation || '-'}</td>
+                              <td className=" p-3">{stock.mrp}</td>
+                              <td className=" p-3">{stock.purchasePrice}</td>
+                              <td className=" p-3">{stock.sellingPrice}</td>
+                              <td className=" p-3">{stock.quantityInStock}</td>
+                              <td className=" p-3">{stock.minimumStockLevel}</td>
+                              <td className=" p-3">{stock.shelfLocation || '-'}</td>
                             </tr>
                           ))}
                         </TableBody>
