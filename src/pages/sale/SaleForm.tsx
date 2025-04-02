@@ -315,10 +315,10 @@ const SaleForm: React.FC = () => {
           </div>
         </div>
 
-      <Modal className='max-h-[80vh] max-w-1/3 mt-[10%]' isOpen={isOpen} onClose={()=>setIsOpen(false)} >
+      <Modal className='max-h-[80vh] max-w-[55%] ' isOpen={isOpen} onClose={()=>setIsOpen(false)} >
 
         {/* Invoice Preview */}
-       <div className="w-full">
+       <div className="w-full mt-[6%] mb-5 p-2">
         <h2 className="text-lg text-center font-bold mb-4 dark:text-black">Invoice Preview</h2>
         <div className='bg-white w-full h-auto'>
         {pdfBlob ? (

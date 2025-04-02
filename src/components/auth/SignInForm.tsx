@@ -104,7 +104,7 @@ const SignInForm: React.FC = () => {
           )}
         </Formik>
 
-        <div className="mt-5 text-center">
+        <div className="mt-5 text-center hidden">
           <p className="text-sm">Don't have an account? <Link to="/signup" className="text-blue-500">Sign Up</Link></p>
         </div>
       </div>
