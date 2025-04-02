@@ -11,7 +11,7 @@ import { Link, useSearchParams } from 'react-router';
 import { Medicine } from '../../helpers/interfaces';
 
 
-export default function MedicineTable() {
+export default function MedicineList() {
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [searchParams]=useSearchParams();
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
@@ -43,7 +43,7 @@ export default function MedicineTable() {
         <Table className="w-full text-left border-collapse">
           <TableHeader className='bg-gray-100 dark:bg-gray-800'>
             <TableRow>
-              {['Medicine ID', 'Name', 'Generic Name', 'Category', 'Form', 'Strength', 'Status'].map((header) => (
+              {['Medicine ID', 'Name', 'Generic Name',  'Form', 'Strength',].map((header) => (
                 <th key={header} className="px-5 py-3 font-medium text-gray-500">{header}</th>
               ))}
               <th className='px-5 py-3 font-medium text-gray-500'>Action</th>
@@ -56,18 +56,18 @@ export default function MedicineTable() {
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.medicineCode}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300" ><p title={medicine.name} className='whitespace-nowrap max-w-[100px] text-ellipsis overflow-hidden'>{medicine.name}</p></TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.genericName}</TableCell>
-                <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.category}</TableCell>
+                {/* <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.category}</TableCell> */}
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.form}</TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">{medicine.strength}</TableCell>
-                <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
+                {/* <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
                   <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
                     medicine.status === 'active' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
                   }`}>{medicine.status}</span>
-                </TableCell>
+                </TableCell> */}
                 <TableCell className=''>
                   <div className='w-full h-full flex gap-2 justify-around items-center'>
 
-                <Link to={`/medicine/item/${medicine._id}/edit`} 
+                <Link to={`/medicine/items/${medicine._id}/edit`} 
                
                 
                 >

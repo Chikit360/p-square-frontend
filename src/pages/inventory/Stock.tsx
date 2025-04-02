@@ -6,16 +6,20 @@ import Button from '../../components/ui/button/Button';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { Table, TableBody, TableHeader, TableRow } from '../../components/ui/table';
 import { Medicine } from '../../helpers/interfaces';
-import { Link, useSearchParams } from 'react-router';
+import { Link, useNavigate, useSearchParams } from 'react-router';
+import { getUserRole } from '../../features/auth/user.slice';
+import { PencilIcon } from '../../icons';
 
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [searchParams] = useSearchParams();
+  const navigate=useNavigate()
   const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.inventory);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
+  const userRole = useSelector(getUserRole);
 
   useEffect(() => {
     if (selectedItem !== null) {
@@ -54,7 +58,7 @@ const Stock: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Inventory Management</h1>
 
       {/* Layout Section */}
-      <div className="w-full h-full flex justify-between items-center gap-1">
+      <div className="w-full h-full flex justify-between items-start gap-1">
         {/* Medicine List Section */}
         <div className={`transition-all duration-300 ${selectedItem ? 'w-0 md:w-1/3' : 'w-full'} bg-white dark:bg-white/[0.03] border-gray-200 dark:border-gray-900 rounded-lg shadow-sm`}>
           {filteredData?.length === 0 ? (
@@ -69,7 +73,7 @@ const Stock: React.FC = () => {
                   <tr>
                     <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Name</th>
                     <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Batch Number</th>
-                    <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Category</th>
+                    {/* <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Category</th> */}
                     <th className="p-3 text-left px-5 py-3 font-medium text-gray-500">Stock</th>
                   </tr>
                 </thead>
@@ -82,7 +86,7 @@ const Stock: React.FC = () => {
                     >
                       <td className="p-3">{medicine.name}</td>
                       <td className="p-3">{medicine.batchNumber || 'N/A'}</td>
-                      <td className="p-3">{medicine.category}</td>
+                      {/* <td className="p-3">{medicine.category}</td> */}
                       <td className="p-3">{medicine.totalQuantity}</td>
                     </tr>
                   ))}
@@ -98,7 +102,7 @@ const Stock: React.FC = () => {
 
             <div className='flex justify-between items-center mb-6'>
               <h2 className="text-2xl font-semibold text-gray-800 dark:text-white">Medicine Details</h2>
-              <Button className='float-right'> <Link to={`/medicine/inventory/${selectedItem._id}/add-update`}>Add/Update</Link> </Button>
+              <Button className='float-right'> <Link to={userRole==='admin' ? `/medicine/inventory/${selectedItem._id}/add-update`:`/medicine/inventory/${selectedItem._id}/add`}>Add new stock</Link> </Button>
             </div>
 
             {/* Medicine Details */}
@@ -132,7 +136,7 @@ const Stock: React.FC = () => {
                         <TableHeader className="sticky top-0 dark:text-white bg-gray-100 dark:bg-gray-800 ">
                           <TableRow>
                             <th className="text-left px-2 text-wrap py-3 font-medium text-gray-500">Batch Number</th>
-                            <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Manufacture Date</th>
+                            
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Expiry Date</th>
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">MRP</th>
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Purchase Price</th>
@@ -140,6 +144,11 @@ const Stock: React.FC = () => {
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Quantity</th>
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Min Stock Level</th>
                             <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Shelf Location</th>
+                            {
+                              userRole==="admin"?
+                              <th className=" text-left px-2 text-wrap py-3 font-medium text-gray-500">Action</th>:null
+
+                            }
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -150,9 +159,7 @@ const Stock: React.FC = () => {
                           ) : inventoryData.map((stock, index) => (
                             <tr key={index} className="hover:bg-gray-200 transition dark:hover:bg-gray-800 dark:text-white">
                               <td className=" p-3">{stock.batchNumber || '-'}</td>
-                              <td className=" p-3">
-                                {stock.manufactureDate ? new Date(stock.manufactureDate).toLocaleDateString() : '-'}
-                              </td>
+                              
                               <td className=" p-3">
                                 {stock.expiryDate ? new Date(stock.expiryDate).toLocaleDateString() : '-'}
                               </td>
@@ -162,6 +169,17 @@ const Stock: React.FC = () => {
                               <td className=" p-3">{stock.quantityInStock}</td>
                               <td className=" p-3">{stock.minimumStockLevel}</td>
                               <td className=" p-3">{stock.shelfLocation || '-'}</td>
+                              {
+                                userRole==="admin"?
+                                <td className="cursor-pointer p-3"><div onClick={()=>{
+                                  navigate(`/medicine/inventory/${selectedItem._id}/add-update`,{
+                                    state: {
+                                      batchNumber: stock.batchNumber,
+                                      expiryDate: stock.expiryDate,
+                                    },
+                                  })
+                                }} ><PencilIcon/></div> </td>:null
+                              }
                             </tr>
                           ))}
                         </TableBody>

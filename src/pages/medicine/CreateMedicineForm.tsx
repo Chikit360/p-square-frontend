@@ -19,41 +19,41 @@ const STATUS_ENUM = ['active', 'inactive'];
 const initialValues = {
   name: '',
   genericName: '',
-  manufacturer: '',
-  category: '',
+  // manufacturer: '',
+  // category: '',
   form: '',
   strength: '',
   unit: '',
   prescriptionRequired: false,
-  notes: '',
-  status: 'active',
+  // notes: '',
+  // status: 'active',
 };
 
 // Generate fake data using faker
 const generateFakeData = () => ({
   name: faker.commerce.productName(),
   genericName: faker.lorem.word(),
-  manufacturer: faker.company.name(),
-  category: faker.commerce.department(),
+  // manufacturer: faker.company.name(),
+  // category: faker.commerce.department(),
   form: faker.helpers.arrayElement(FORM_ENUM),
   strength: faker.helpers.arrayElement(STRENGTH_ENUM),
   unit: faker.helpers.arrayElement(UNIT_ENUM),
   prescriptionRequired: faker.datatype.boolean(),
-  notes: faker.lorem.sentence(),
-  status: faker.helpers.arrayElement(STATUS_ENUM),
+  // notes: faker.lorem.sentence(),
+  // status: faker.helpers.arrayElement(STATUS_ENUM),
 });
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Medicine name is required'),
   genericName: Yup.string().required('Generic name is required'),
-  manufacturer: Yup.string().required('Manufacturer is required'),
-  category: Yup.string().required('Category is required'),
+  // manufacturer: Yup.string().required('Manufacturer is required'),
+  // category: Yup.string().required('Category is required'),
   form: Yup.string().oneOf(FORM_ENUM, 'Invalid form').required('Form is required'),
   strength: Yup.string().oneOf(STRENGTH_ENUM, 'Invalid strength').required('Strength is required'),
   unit: Yup.string().oneOf(UNIT_ENUM, 'Invalid unit').required('Unit is required'),
   prescriptionRequired: Yup.boolean(),
-  status: Yup.string().oneOf(STATUS_ENUM, 'Invalid status').required('Status is required'),
-  notes: Yup.string(),
+  // status: Yup.string().oneOf(STATUS_ENUM, 'Invalid status').required('Status is required'),
+  // notes: Yup.string(),
 });
 
 const CreateMedicineForm = () => {

@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../features/store';
-import { addOrUpdateInventory, fetchInventoryDetailsByMedicineId } from '../../features/inventory/inventoryApi';
+import React, {  useState } from 'react';
+import { useDispatch,  } from 'react-redux';
+import { AppDispatch, } from '../../features/store';
+import { addInventory,  } from '../../features/inventory/inventoryApi';
 import { InventoryData } from '../../helpers/interfaces';
-import { useLocation, useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 
 
@@ -11,18 +11,14 @@ interface UpdateStockProps {
   initialData?: InventoryData;
 }
 
-const UpdateStock: React.FC<UpdateStockProps> = () => {
+const AddStock: React.FC<UpdateStockProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate=useNavigate()
-  const { inventoryData, } = useSelector((state: RootState) => state.inventory);
   const {id}=useParams<{id:string}>();
-  const location = useLocation();
-
-  const { batchNumber, expiryDate } = location.state || {};
 
   // Initialize Form Data
   const [formData, setFormData] = useState<InventoryData>({
-    medicineId:  '',
+    medicineId: id|| '',
     batchNumber: '',
     expiryDate:  '',
     mrp:  0,
@@ -33,6 +29,9 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
     shelfLocation: '',
   });
 
+  
+  
+
   // Handle Form Change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
@@ -42,41 +41,21 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
     }));
   };
 
-  useEffect(() => {
-    if (id) {
-   dispatch(fetchInventoryDetailsByMedicineId(id));}
-  }, [dispatch,id])
-
-  useEffect(() => {
-    const initialData = inventoryData.length > 0 ? inventoryData.find(item=>item.batchNumber===batchNumber  && item.expiryDate===expiryDate) : { medicineId: id || '' };
-    setFormData({
-      medicineId: initialData?.medicineId || '',
-      batchNumber:  initialData?.batchNumber || '',
-      expiryDate: initialData?.expiryDate
-        ? new Date(initialData.expiryDate).toISOString().split('T')[0]
-        : '',
-      mrp: initialData?.mrp ?? 0,
-      purchasePrice: initialData?.purchasePrice ?? 0,
-      sellingPrice: initialData?.sellingPrice ?? 0,
-      quantityInStock: initialData?.quantityInStock ?? 0,
-      minimumStockLevel: initialData?.minimumStockLevel ?? 0,
-      shelfLocation: initialData?.shelfLocation || '',
-    })
-  }, [dispatch, inventoryData]);
   
   
   // Submit Handler
   const handleSubmit = async () => {
-    if (!formData.medicineId) {
+    if (!id) {
       alert('Please provide a Medicine ID!');
       return;
     }
 
     try {
-      await dispatch(addOrUpdateInventory(formData));
+      
+      await dispatch(addInventory(formData));
       // this navigation will handle proper but for now, only for client purpose 
       navigate('/medicine/items/add')
-      alert('Stock updated successfully!');
+      alert('Stock Created successfully!');
     } catch (error) {
       console.error('Error updating stock:', error);
       alert('Failed to update stock. Please try again.');
@@ -86,7 +65,7 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">
-        {inventoryData.length>0 ? 'Update Stock' : 'Add New Stock'}
+         Add New Stock
       </h1>
 
       {/* Form Grid Layout with 3 Columns */}
@@ -123,12 +102,12 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
       <button
         className="bg-blue-500 text-white px-4 py-2 mt-4"
         onClick={handleSubmit}
-        disabled={!formData.medicineId}
+        disabled={!id}
       >
-        {inventoryData.length>0 ? 'Update Stock' : 'Add Stock'}
+        Add Stock
       </button>
     </div>
   );
 };
 
-export default UpdateStock;
+export default AddStock;

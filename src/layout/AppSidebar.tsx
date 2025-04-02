@@ -35,8 +35,8 @@ const navItems: NavItem[] = [
   },
   {
     icon: <BoxIcon />,
-    name: "Sell",
-    subItems: [{ name: "List", path: "/sell", pro: false },],
+    name: "Sale",
+    subItems: [{ name: "Sale History", path: "/sale", pro: false },{ name: "Customer", path: "/customer-list", pro: false },],
   },
   // {
   //   icon: <CalenderIcon />,

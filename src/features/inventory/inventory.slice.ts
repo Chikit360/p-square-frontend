@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { addOrUpdateInventory, fetchInventoryDetailsByMedicineId } from './inventoryApi';
+import { addInventory, addOrUpdateInventory, fetchInventoryDetailsByMedicineId, updateInventory } from './inventoryApi';
 
 // Define Interfaces
 interface InventoryData {
@@ -108,6 +108,26 @@ const stockSlice = createSlice({
       .addCase(addOrUpdateInventory.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error?.message || 'Failed to update stock data';
+      }).addCase(addInventory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addInventory.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.inventoryData.push(action.payload);
+      })
+      .addCase(addInventory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to add inventory';
+      }).addCase(updateInventory.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(updateInventory.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        state.inventoryData = action.payload;
+      })
+      .addCase(updateInventory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || 'Failed to update inventory';
       });
   },
 });

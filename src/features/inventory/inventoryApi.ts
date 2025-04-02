@@ -56,3 +56,30 @@ export const fetchInventoryDetailsByMedicineId = createAsyncThunk<
     }
   }
 );
+
+// Add inventory
+export const addInventory = createAsyncThunk(
+  'inventory/add',
+  async (inventoryData: any, thunkAPI) => {
+    try {
+      const response = await axiosInstance.post('/inventories/add', inventoryData);
+      return response.data.data; // Assuming data is in the `data` key in the response
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+// Update inventory by ID
+export const updateInventory = createAsyncThunk(
+  'inventory/update',
+  async (updateData: { inventoryId: string; inventoryData: any }, thunkAPI) => {
+    try {
+      const { inventoryId, inventoryData } = updateData;
+      const response = await axiosInstance.put(`/inventories/update/${inventoryId}`, inventoryData);
+      return response.data.data; // Assuming data is in the `data` key in the response
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

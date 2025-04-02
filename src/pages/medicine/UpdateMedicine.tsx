@@ -27,21 +27,31 @@ const UpdateMedicineForm = () => {
         _id: '',
         name: '',
         genericName: '',
-        manufacturer: '',
-        category: '',
+        // manufacturer: '',
+        // category: '',
         form: '',
         strength: '',
         unit: '',
         prescriptionRequired: false,
-        notes: '',
-        status: 'active',
+        // notes: '',
+        // status: 'active',
     });
 
     // Load data into initialValues
     useEffect(() => {
         const medicine = medicines.find((med) => med._id === id);
         if (medicine) {
-            setInitialValues({ ...medicine });
+            setInitialValues({
+                _id: medicine._id,
+                name: medicine.name,
+                genericName: medicine.genericName,
+                
+                form: medicine.form,
+                strength: medicine.strength,
+                unit: medicine.unit,
+                prescriptionRequired: medicine.prescriptionRequired,
+             
+            });
         }
     }, [id, medicines]);
 
@@ -50,13 +60,13 @@ const UpdateMedicineForm = () => {
         _id: Yup.string().required('Medicine ID is required'),
         name: Yup.string().required('Name is required'),
         genericName: Yup.string().required('Generic Name is required'),
-        manufacturer: Yup.string().required('Manufacturer is required'),
-        category: Yup.string().required('Category is required'),
+        // manufacturer: Yup.string().required('Manufacturer is required'),
+        // category: Yup.string().required('Category is required'),
         form: Yup.string().required('Form is required'),
         strength: Yup.string().required('Strength is required'),
         unit: Yup.string().required('Unit is required'),
         prescriptionRequired: Yup.boolean(),
-        status: Yup.string().oneOf(STATUS_ENUM).required('Status is required'),
+        // status: Yup.string().oneOf(STATUS_ENUM).required('Status is required'),
     });
 
     // Submit Handler
@@ -116,7 +126,7 @@ const UpdateMedicineForm = () => {
                                                 )}
                                             </Field>
                                         </Label>
-                                    ) : ['status', 'form', 'strength', 'unit'].includes(key) ? (
+                                    ) : ['form', 'strength', 'unit'].includes(key) ? (
                                         <div className="relative w-full">
                                             <Field
                                                 as="select"

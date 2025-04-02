@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 interface UserData {
   username: string;
   email: string;
+  role:string;
 }
 
 interface User {
@@ -70,4 +71,5 @@ const authSlice = createSlice({
 });
 
 export const { logout, setUser } = authSlice.actions;
+export const getUserRole = (state: { auth: AuthState }) => state.auth.user?.role;
 export default authSlice.reducer;

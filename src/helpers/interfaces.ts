@@ -3,22 +3,22 @@ export interface Medicine {
     medicineCode: string;
     name: string;
     genericName: string;
-    manufacturer: string;
-    category: string;
+    // manufacturer: string;
+    // category: string;
     form: string;
     strength: string;
     unit: string;
     prescriptionRequired: boolean;
     batchNumber: string;
     totalQuantity: number;
-    notes?: string;
-    status: string;
+    // notes?: string;
+    // status: string;
   }
   
   export interface InventoryData {
     medicineId: string;
     batchNumber?: string;
-    manufactureDate?: string;
+    // manufactureDate?: string;
     expiryDate?: string;
     mrp?: number;
     purchasePrice?: number;
