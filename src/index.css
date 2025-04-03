@@ -790,3 +790,6 @@ span.flatpickr-weekday,
   border-radius: 5px;
 }
 
+.react-select__control{
+  @apply dark:bg-transparent
+}

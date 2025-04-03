@@ -6,6 +6,7 @@ import activeMedicineReducer from '../features/medicine/activeMedicine.slice'
 import authMiddleware from './middlewares/authMiddleware'
 import inventoryReducer from './inventory/inventory.slice';
 import customerReducer from './customer/customerSlice';
+import dropdownReducer from './dropDown/dropDownSlice';
 
 const store = configureStore({
   reducer: {
@@ -14,7 +15,8 @@ const store = configureStore({
     inventory:inventoryReducer,
     activeMedicines:activeMedicineReducer,
     sales: saleReducer,
-    customers:customerReducer
+    customers:customerReducer,
+    dropDown:dropdownReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authMiddleware),

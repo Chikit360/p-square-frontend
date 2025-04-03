@@ -86,7 +86,7 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-4">
-        {inventoryData.length>0 ? 'Update Stock' : 'Add New Stock'}
+        {batchNumber && expiryDate ? 'Update Stock' : 'Add New Stock'}
       </h1>
 
       {/* Form Grid Layout with 3 Columns */}
@@ -109,11 +109,12 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
                     : 'text'
                 }
                 name={key}
-                disabled={key === 'medicineId'}
+                disabled={key === 'batchNumber'}
                 placeholder={`Enter ${key.replace(/([A-Z])/g, ' $1').trim()}`}
                 className="border p-2 w-full"
                 value={value?.toString() || ''}
                 onChange={handleChange}
+               
               />
             </div>
           ))}
@@ -125,7 +126,7 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
         onClick={handleSubmit}
         disabled={!formData.medicineId}
       >
-        {inventoryData.length>0 ? 'Update Stock' : 'Add Stock'}
+        {batchNumber && expiryDate ? 'Update Stock' : 'Add Stock'}
       </button>
     </div>
   );

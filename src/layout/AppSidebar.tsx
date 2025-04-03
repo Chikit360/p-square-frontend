@@ -11,15 +11,18 @@ import {
   HorizontaLDots,
 
   MedicineIcon,
+  PieChartIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
+import { useSelector } from "react-redux";
+import { getUserRole } from "../features/auth/user.slice";
 
 
 type NavItem = {
   name: string;
   icon: React.ReactNode;
   path?: string;
-  subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  subItems?: { name: string; path: string; pro?: boolean; new?: boolean,role?:string[] }[];
 };
 
 const navItems: NavItem[] = [
@@ -69,14 +72,14 @@ const navItems: NavItem[] = [
 ];
 
 const othersItems: NavItem[] = [
-  // {
-  //   icon: <PieChartIcon />,
-  //   name: "Charts",
-  //   subItems: [
-  //     { name: "Line Chart", path: "/line-chart", pro: false },
-  //     { name: "Bar Chart", path: "/bar-chart", pro: false },
-  //   ],
-  // },
+  {
+    icon: <PieChartIcon />,
+    name: "Utility",
+    subItems: [
+      { name: "Strength", path: "/admin/strength",role:["admin"], pro: false },
+      { name: "Form", path: "/admin/form",role:["admin"], pro: false },
+    ],
+  },
   // {
   //   icon: <BoxCubeIcon />,
   //   name: "UI Elements",
@@ -102,6 +105,7 @@ const othersItems: NavItem[] = [
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const location = useLocation();
+  const userRole=useSelector(getUserRole)
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -244,7 +248,7 @@ const AppSidebar: React.FC = () => {
               }}
             >
               <ul className="mt-2 space-y-1 ml-9">
-                {nav.subItems.map((subItem) => (
+                {nav.subItems.filter((subItem) => !subItem.role || subItem.role.includes(userRole!)).map((subItem) => (
                   <li key={subItem.name}>
                     <Link
                       to={subItem.path}
@@ -367,7 +371,7 @@ const AppSidebar: React.FC = () => {
               </h2>
               {renderMenuItems(navItems, "main")}
             </div>
-            {/* <div className="">
+            <div className="">
               <h2
                 className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
                   !isExpanded && !isHovered
@@ -382,7 +386,7 @@ const AppSidebar: React.FC = () => {
                 )}
               </h2>
               {renderMenuItems(othersItems, "others")}
-            </div> */}
+            </div>
           </div>
         </nav>
         {/* {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null} */}

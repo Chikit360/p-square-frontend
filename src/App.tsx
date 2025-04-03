@@ -9,6 +9,7 @@ import AppLayout from "./layout/AppLayout";
 import useOnlineStatus from "./hooks/useOnlineStatus";
 import NotFound from "./pages/OtherPage/NotFound";
 import { authRoutes, protectedRoutes } from "./constants/route";
+import { fetchDropdownOptions } from "./features/dropDown/dropDownApi";
 
 
 
@@ -20,6 +21,9 @@ export default function App() {
 
   useEffect(() => {
     dispatch({ type: 'auth/checkAuth' });
+    dispatch(fetchDropdownOptions("strength"));  // Fetch Category dropdown
+    dispatch(fetchDropdownOptions("form"));   // Fetch Gender dropdown
+
   }, [dispatch]);
 
   if (!isOnline) {

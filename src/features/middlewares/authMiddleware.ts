@@ -10,8 +10,12 @@ const authMiddleware: Middleware = (store) => (next) => async (action) => {
 
     try {
       const response = await axiosInstance.get('/users/me');
+      if(response.status===200){
 
-      store.dispatch(setUser(response.data));
+        store.dispatch(setUser(response.data));
+      }else{
+        store.dispatch(logout());
+      }
     } catch (error: any) {
       console.error('Failed to authenticate user:', error?.response?.data?.message);
       store.dispatch(logout());

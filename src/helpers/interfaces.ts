@@ -27,3 +27,16 @@ export interface Medicine {
     minimumStockLevel?: number;
     shelfLocation?: string;
   }
+
+  export interface DropdownOption {
+    _id?: string;
+    label: string;
+    value: string;
+    inputFieldName: string;
+    status: string|"active" | "inactive";
+  }
+
+  export interface Dropdowns {
+    form: DropdownOption[];
+    strength: DropdownOption[];
+  }

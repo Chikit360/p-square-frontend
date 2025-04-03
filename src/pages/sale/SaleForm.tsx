@@ -15,6 +15,7 @@ interface Medicine {
   _id: string;
   name: string;
   sellingPrice: number;
+  purchasePrice:number;
 }
 
 interface CartItem {
@@ -209,7 +210,7 @@ const SaleForm: React.FC = () => {
                   <div className="w-full">
                     <Label>Select Medicine</Label>
                   <Select
-                  className='dark:text-black'
+                  className='dark:text-black dark:bg-transparent'
                   isSearchable={true}
                   options={activeMedicineList
                         .filter(med => !cart.some(item => item.medicine._id === med._id))
@@ -221,7 +222,7 @@ const SaleForm: React.FC = () => {
                           }
                           
                         ))}
-                        
+                       
                         onChange={(data) => {
                           const selectedMedicine = activeMedicineList.find((m) => m._id === data?._id);
                           if (selectedMedicine) {
@@ -246,7 +247,7 @@ const SaleForm: React.FC = () => {
      
 
       {/* Cart Summary */}
-      <div className="border-gray-300 dark:border-gray-900 rounded-lg border p-8 shadow flex flex-col justify-start bg-white dark:bg-white/[0.03]">
+      <div className="border-gray-300 dark:border-gray-900 rounded-lg border p-8 shadow flex flex-col justify-between bg-white dark:bg-white/[0.03]">
         <div className='w-full h-1/2'>
   <h2 className="text-lg font-bold mb-4">Cart Summary</h2>
   {cart.length > 0 ? (
@@ -257,6 +258,7 @@ const SaleForm: React.FC = () => {
             <th className="border p-2 text-left">#</th>
             <th className="border p-2 text-left">Medicine</th>
             <th className="border p-2 text-center">Price (INR)</th>
+            <th className="border p-2 text-center">Purchase Price (INR)</th>
             <th className="border p-2 text-center">Quantity</th>
             <th className="border p-2 text-center">Total</th>
             <th className="border p-2 text-center">Actions</th>
@@ -268,6 +270,7 @@ const SaleForm: React.FC = () => {
               <td className="border p-2">{index + 1}</td>
               <td className="border p-2">{item.medicine.name}</td>
               <td className="border p-2 text-center">{item.medicine.sellingPrice}</td>
+              <td className="border p-2 text-center">{item.medicine.purchasePrice}</td>
               <td className="border p-2 text-center flex justify-center items-center gap-2">
                 <button
                   onClick={() => handleQuantityChange(item.medicine._id, -1)}

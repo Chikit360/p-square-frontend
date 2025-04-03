@@ -9,9 +9,11 @@ import MedicineList from "../pages/medicine/MedicineList";
 import UpdateMedicineForm from "../pages/medicine/UpdateMedicine";
 import SaleForm from "../pages/sale/SaleForm";
 import SaleHistory from "../pages/sale/SaleHistory";
+import FormDropDown from "../pages/utility/FormDropDown";
 import CustomerHistory from "../pages/user/CustomerHistory";
 import CustomerList from "../pages/user/CustomerList";
 import UserProfiles from "../pages/UserProfiles";
+import StrengthDropDown from "../pages/utility/StrengthDropDown";
 
 export const authRoutes = [
     { path: "/signin", element: <SignIn /> },
@@ -30,5 +32,9 @@ export const authRoutes = [
     { path: "/medicine/inventory/:id/add",params:[], element: <AddStock /> },
     { path: "/customer/:id/purchase-history",params:["id"], element: <CustomerHistory /> },
     { path: "/customer-list",params:[], element: <CustomerList /> },
-    { path: "/profile",params:[], element: <UserProfiles /> }
+    { path: "/profile",params:[], element: <UserProfiles /> },
+
+
+    { path: "/admin/strength",params:[], element: <StrengthDropDown /> },
+    { path: "/admin/form",params:[], element: <FormDropDown /> }
   ];

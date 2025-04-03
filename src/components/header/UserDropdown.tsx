@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import store from "../../features/store";
+import store, { RootState } from "../../features/store";
 import { logout } from "../../features/auth/user.slice";
+import { useSelector } from "react-redux";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
+  const {user}=useSelector((state:RootState)=>state.auth)
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -24,7 +26,7 @@ export default function UserDropdown() {
           <img src="/images/user/dummy-avatar.jpg" alt="User" />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">Avainash</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user?.username}</span>
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
@@ -52,10 +54,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            Avainash Chowdhury
+            {user?.username}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            avainash@gmail.com
+            {user?.email}
           </span>
         </div>
 

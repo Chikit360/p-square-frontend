@@ -13,7 +13,7 @@ const ProtectedLayout: React.FC = () => {
   useEffect(() => {
     const token = Cookies.get('token');
     const storedUser = localStorage.getItem('user');
-
+    console.log(token, storedUser , user);
     if (token && storedUser && !user) {
       dispatch(setUser({ data: JSON.parse(storedUser), token }));
     }
