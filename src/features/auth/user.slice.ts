@@ -7,18 +7,23 @@ interface UserData {
   username: string;
   email: string;
   role:string;
+  token: string | null;
 }
 
 interface User {
   data: UserData;
-  token: string | null;
+  message:string;
+  error:string;
+  success:boolean;
 }
 
 interface AuthState {
   user: UserData | null;
   isAuthenticated: boolean;
+  success: boolean;
   loading: boolean;
   error: string | null;
+  message: string | null;
 }
 
 const token = Cookies.get('token');
@@ -27,8 +32,10 @@ const storedUser = token ? JSON.parse(localStorage.getItem('user') || 'null') : 
 const initialState: AuthState = {
   user: storedUser,
   isAuthenticated: !!token,
+  success: false,
   loading: false,
   error: null,
+  message:null
 };
 
 const authSlice = createSlice({
@@ -39,8 +46,8 @@ const authSlice = createSlice({
       state.user = action.payload.data;
       state.isAuthenticated = true;
       localStorage.setItem('user', JSON.stringify(action.payload.data));
-      if (action.payload.token) {
-        Cookies.set('token', action.payload.token, { expires: 7 });
+      if (action.payload.data.token) {
+        Cookies.set('token', action.payload.data.token, { expires: 7 });
       }
     },
     logout: (state) => {
@@ -60,12 +67,17 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.data;
         state.isAuthenticated = true;
-        Cookies.set('token', action.payload.token!, { expires: 7 });
-        localStorage.setItem('user', JSON.stringify(action.payload.data));
+        Cookies.set('token', action.payload.data.token!, { expires: 7 });
+        localStorage.setItem('user', JSON.stringify(action.payload.data.token));
+        state.message = action.payload.message;
+        state.success = action.payload.success;
       })
       .addCase(loginUser.rejected, (state, action: PayloadAction<unknown, string, any, SerializedError>) => {
+        console.log(action.payload)
         state.loading = false;
-        state.error = action.error?.message || 'Failed to login';
+        state.error = (action.payload as { error: string }).error;
+        const payload = action.payload as { error: string; message: string };
+        state.message = payload.message;
       });
   },
 });

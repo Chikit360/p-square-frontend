@@ -17,7 +17,7 @@ const validationSchema = Yup.object().shape({
 const SignInForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const { loading,isAuthenticated, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error,success,message } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = (values: { username: string; password: string }) => {
     dispatch(loginUser(values));
@@ -25,17 +25,15 @@ const SignInForm: React.FC = () => {
 
   useEffect(() => {
 
-    if (isAuthenticated) {
+    if (success) {
       // toastId = 
-      toast.success("Login successful");
+      toast.success(message);
     }
 
-    // return () => {
-    //   if (toastId !== null) {
-    //     toast.dismiss(toastId);
-    //   }
-    // };
-  }, [isAuthenticated]);
+    if(error){
+      toast.error(message);
+    }
+  }, [success,error]);
   
 
   return (
