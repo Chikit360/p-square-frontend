@@ -3,8 +3,24 @@ import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import PageMeta from "../../components/common/PageMeta";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../../features/store";
+import { toast } from "react-toastify";
 
 export default function Home() {
+  const { error, success, message } = useSelector((state: RootState) => state.auth);
+  useEffect(() => {
+      if (error) {
+        toast.error(message);
+        // Optionally, clear the error state here if needed
+      }
+    
+      if (success && message) {
+        toast.success(message);
+        // Optionally, reset success state here if needed
+      }
+    }, [error, success, message]);
   return (
     <>
       <PageMeta

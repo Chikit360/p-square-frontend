@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { loginUser } from './authApi';
-import { SerializedError } from '@reduxjs/toolkit';
+
 import Cookies from 'js-cookie';
 
 interface UserData {
@@ -22,7 +22,7 @@ interface AuthState {
   isAuthenticated: boolean;
   success: boolean;
   loading: boolean;
-  error: string | null;
+  error: boolean;
   message: string | null;
 }
 
@@ -34,7 +34,7 @@ const initialState: AuthState = {
   isAuthenticated: !!token,
   success: false,
   loading: false,
-  error: null,
+  error: false,
   message:null
 };
 
@@ -53,6 +53,8 @@ const authSlice = createSlice({
     logout: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      state.success = true;
+      state.message = 'Logout successful';
       Cookies.remove('token');
       localStorage.removeItem('user');
     },
@@ -61,7 +63,7 @@ const authSlice = createSlice({
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<User>) => {
         state.loading = false;
@@ -72,12 +74,11 @@ const authSlice = createSlice({
         state.message = action.payload.message;
         state.success = action.payload.success;
       })
-      .addCase(loginUser.rejected, (state, action: PayloadAction<unknown, string, any, SerializedError>) => {
-        console.log(action.payload)
+      .addCase(loginUser.rejected, (state, action) => {
+        console.log(action.payload);
         state.loading = false;
-        state.error = (action.payload as { error: string }).error;
-        const payload = action.payload as { error: string; message: string };
-        state.message = payload.message;
+        state.error = true;
+        state.message = (action.payload as { message?: string })?.message || 'An error occurred';
       });
   },
 });

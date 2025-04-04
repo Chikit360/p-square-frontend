@@ -14,7 +14,8 @@ export const loginUser = createAsyncThunk(
       console.log(response.data)
       return response.data
     } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'An error occurred')
+      console.log(error.response?.data)
+      return rejectWithValue(error.response?.data)
     }
   }
 )

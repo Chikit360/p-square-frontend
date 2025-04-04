@@ -20,20 +20,22 @@ const SignInForm: React.FC = () => {
   const { loading, error,success,message } = useSelector((state: RootState) => state.auth);
 
   const handleSubmit = (values: { username: string; password: string }) => {
-    dispatch(loginUser(values));
+     dispatch(loginUser(values));
+  
   };
 
   useEffect(() => {
-
-    if (success) {
-      // toastId = 
-      toast.success(message);
-    }
-
-    if(error){
+    if (error) {
       toast.error(message);
+      // Optionally, clear the error state here if needed
     }
-  }, [success,error]);
+  
+    if (success && message) {
+      toast.success(message);
+      // Optionally, reset success state here if needed
+    }
+  }, [error, success, message]);
+  
   
 
   return (
