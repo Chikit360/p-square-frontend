@@ -9,6 +9,7 @@ interface ConfirmationPopupProps {
 }
 
 const ConfirmationPopup: React.FC<ConfirmationPopupProps> = ({ title, message, onConfirm, onCancel, isOpen }) => {
+  console.log(isOpen)
   if (!isOpen) return null;
 
   return (

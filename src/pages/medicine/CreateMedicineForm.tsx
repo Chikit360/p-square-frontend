@@ -75,7 +75,7 @@ const CreateMedicineForm = () => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
-          enableReinitialize
+          // enableReinitialize
         >
           {({ isSubmitting, setValues, values, setFieldValue }) => (
             <Form>
@@ -89,6 +89,7 @@ const CreateMedicineForm = () => {
                     {/* React-Select for Form & Strength */}
                     {key === 'form' || key === 'strength' ? (
                       <Select
+                      name={key}
                       options={dropdowns[key]?.map((item: DropdownOption) => ({
                      label: item.label,
                      value: item.value,
@@ -115,18 +116,27 @@ const CreateMedicineForm = () => {
                  />
                     
                     ) : key === 'unit' ? (
-                      <Field
-                        as="select"
+
+                      <Select
+                        options={UNIT_ENUM.map((unit) => ({
+                          label: unit.charAt(0).toUpperCase() + unit.slice(1),
+                          value: unit,
+                        }))}
                         name={key}
-                        className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
-                      >
-                        <option value="">Select unit</option>
-                        {UNIT_ENUM.map((unit) => (
-                          <option key={unit} value={unit}>
-                            {unit}
-                          </option>
-                        ))}
-                      </Field>
+                        isLoading={DDLoading}
+                        value={
+                          UNIT_ENUM.find((unit) => unit === values[key]) ? {
+                            label: values[key].charAt(0).toUpperCase() + values[key].slice(1),
+                            value: values[key],
+                          } : null
+                        }
+                        onChange={(selectedOption) =>
+                          setFieldValue(key, selectedOption ? selectedOption.value : '')
+                        }
+                        className="react-select-container dark:bg-transparent"
+                        classNamePrefix="react-select"
+                        placeholder={`Select ${key}`}/>
+                      
                     ) : key === 'prescriptionRequired' ? (
                       <label className="flex items-center cursor-pointer">
                         <Field type="checkbox" name={key} className="hidden" />
@@ -141,7 +151,7 @@ const CreateMedicineForm = () => {
                     ) : (
                       <Field
                         name={key}
-                        className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                        className="h-9 w-full rounded-md border border-gray-300 bg-white px-4 py-2.5 pr-11 text-sm shadow-theme-xs focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
                       />
                     )}
 

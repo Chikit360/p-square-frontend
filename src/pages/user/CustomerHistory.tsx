@@ -7,6 +7,7 @@ import { useParams } from 'react-router';
 const CustomerHistory: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { id } = useParams<{ id: string }>();
+  const [activeInvoice, setActiveInvoice] = useState("")
   const { purchaseHistory, loading, error } = useSelector(
     (state: RootState) => state.customers
   );
@@ -19,6 +20,7 @@ const CustomerHistory: React.FC = () => {
   }, [dispatch, id]);
 
   const handleInvoiceClick = (invoice: any) => {
+    setActiveInvoice(invoice.invoiceId)
     setSelectedInvoice(invoice);
   };
 
@@ -26,12 +28,13 @@ const CustomerHistory: React.FC = () => {
     return purchaseHistory?.invoices.map((invoice: any) => (
       <tr
         key={invoice.invoiceId}
-        className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+        className={`${activeInvoice===invoice.invoiceId ? "bg-gray-200":""} "cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"`}
         onClick={() => handleInvoiceClick(invoice)}
       >
         <td className='text-center p-2'>{invoice.invoiceId}</td>
         <td className='text-center p-2'>{invoice.items.length}</td>
         <td className='text-center p-2'>{invoice.totalAmount.toFixed(2)}</td>
+        <td className='text-center p-2'>{invoice.createdAt.split("T")[0]}</td>
       </tr>
     ));
   };
@@ -86,12 +89,6 @@ const CustomerHistory: React.FC = () => {
           <p className="mb-2">
             <strong>Mobile:</strong> {purchaseHistory?.customer?.mobile}
           </p>
-          <p className="mb-2">
-            <strong>Email:</strong> {purchaseHistory?.customer?.email || 'N/A'}
-          </p>
-          <p className="mb-2">
-            <strong>Address:</strong> {purchaseHistory?.customer?.address || 'N/A'}
-          </p>
         </div>
 
         {/* Right Top: Invoice Table (Scrollable) */}
@@ -104,6 +101,7 @@ const CustomerHistory: React.FC = () => {
                   <th className="p-2">Invoice ID</th>
                   <th className="p-2">Items Count</th>
                   <th className="p-2">Total Amount</th>
+                  <th className="p-2">Purchase Date</th>
                 </tr>
               </thead>
               <tbody>{renderInvoiceTableRows()}</tbody>
@@ -113,7 +111,7 @@ const CustomerHistory: React.FC = () => {
       </div>
 
       {/* Bottom: Medicine Table */}
-      <div className="w-full bg-white dark:bg-white/[0.03] shadow-md rounded-lg p-5 mt-5">
+      <div className="w-full bg-white dark:bg-white/[0.03] rounded-lg p-5 mt-5">
         <h3 className="text-xl font-semibold mb-3">Medicine Details</h3>
         {renderMedicineTable()}
       </div>

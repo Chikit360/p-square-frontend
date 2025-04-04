@@ -39,7 +39,7 @@ const navItems: NavItem[] = [
   {
     icon: <BoxIcon />,
     name: "Sale",
-    subItems: [{ name: "Sale History", path: "/sale", pro: false },{ name: "Customer", path: "/customer-list", pro: false },],
+    subItems: [{ name: "Sale List", path: "/sale", pro: false },{ name: "Customer", path: "/customer-list", pro: false },],
   },
   // {
   //   icon: <CalenderIcon />,

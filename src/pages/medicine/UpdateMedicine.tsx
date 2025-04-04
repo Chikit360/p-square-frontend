@@ -133,24 +133,32 @@ const UpdateMedicineForm = () => {
                                                 placeholder={`Select ${key}`}
                                             />
                                         ) : key === 'unit' ? (
-                                            <Field
-                                                as="select"
-                                                name={key}
-                                                className="h-11 w-full rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs focus:border-brand-300 focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
-                                            >
-                                                <option value="">Select unit</option>
-                                                {UNIT_ENUM.map((unit) => (
-                                                    <option key={unit} value={unit}>
-                                                        {unit}
-                                                    </option>
-                                                ))}
-                                            </Field>
+                                            <Select
+                        options={UNIT_ENUM.map((unit) => ({
+                          label: unit.charAt(0).toUpperCase() + unit.slice(1),
+                          value: unit,
+                        }))}
+                        name={key}
+                        isLoading={DDLoading}
+                        value={
+                          UNIT_ENUM.find((unit) => unit === values[key]) ? {
+                            label: (values[key] ?? '').charAt(0).toUpperCase() + (values[key] ?? '').slice(1),
+                            value: values[key],
+                          } : null
+                        }
+                        onChange={(selectedOption) =>
+                          setFieldValue(key, selectedOption ? selectedOption.value : '')
+                        }
+                        className="react-select-container dark:bg-transparent"
+                        classNamePrefix="react-select"
+                        placeholder={`Select ${key}`}/>
+                                            
                                         ) : (
                                             <Field
                                                 disabled={key === 'medicineCode'}
                                                 name={key}
-                                                className={`h-11 w-full appearance-none rounded-lg border border-gray-300 px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
-                                                    key === 'medicineCode' ? 'bg-blue-200' : 'bg-transparent'
+                                                className={`h-9 w-full appearance-none rounded-md border border-gray-300 px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${
+                                                    key === 'medicineCode' ? 'bg-blue-200' : 'bg-white'
                                                 } text-gray-400 dark:text-gray-400`}
                                             />
                                         )}

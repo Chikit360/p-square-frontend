@@ -39,7 +39,13 @@ interface PurchaseHistoryResponse {
 const customerSlice = createSlice({
   name: 'customers',
   initialState: {
-    customers: [],  // array of customers
+    customers: [] as {
+      name: string;
+      mobile: string;
+      email?: string;
+      dateOfBirth?: string;
+      address?: string;
+    }[],  // array of customers
     purchaseHistory: null as PurchaseHistoryResponse |null,  // initialize purchaseHistory as an empty array of type PurchaseHistoryResponse
     loading: false,  // loading state
     error: null as string | null,  // error state for error messages

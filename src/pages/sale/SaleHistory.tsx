@@ -1,17 +1,40 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { getAllSales } from '../../features/sale/saleApi';
 import Button from '../../components/ui/button/Button';
-import { Link } from 'react-router';
+import { Link, useSearchParams } from 'react-router';
 
 const SaleHistory = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { sales, error, loading } = useSelector((state: RootState) => state.sales);
+  const [searchParams] = useSearchParams();
+  const [filteredData, setFilteredData] = useState<any[]>([]);
 
   useEffect(() => {
     dispatch(getAllSales());
   }, [dispatch]);
+
+  useEffect(() => {
+    const q = searchParams.get('q');
+    console.log(q);
+  
+    if (!q) {
+      setFilteredData(sales);
+    } else {
+      const filtered = sales.map(sale => ({
+        ...sale,
+        sales: sale.sales.filter(item =>
+          item.invoiceId.toLowerCase().includes(q?.toLowerCase() || '')
+        )
+      }));
+  
+      // Remove sales with no items matching the search term
+      const nonEmptySales = filtered.filter(sale => sale.sales.length > 0);
+  
+      setFilteredData(nonEmptySales);
+    }
+  }, [searchParams, sales]);
 
   const getMonthName = (monthNumber: number) => {
     const date = new Date();
@@ -36,11 +59,11 @@ const SaleHistory = () => {
   return (
     <div className="p-1 md:p-8">
       <div className='flex justify-between items-center'>
-      <h1 className="text-2xl font-bold mb-4">Sales History</h1>
+      <h1 className="text-2xl font-bold mb-4">Sales List</h1>
       <Button onClick={()=>console.log("k")}> <Link to={"/sale/add"}>Add Sale</Link> </Button>
       </div>
 
-      {sales.map((monthlySale, index) => (
+      {filteredData.map((monthlySale, index) => (
         <div key={index} className="mb-8">
           <h2 className="text-xl font-semibold">{getMonthName(monthlySale.month)} {monthlySale.year}</h2>
           <p className="font-semibold">Total Earnings: INR {monthlySale.totalTransaction?.toFixed(2)}</p>
@@ -53,16 +76,18 @@ const SaleHistory = () => {
                 <th className="p-2">Customer Name</th>
                 <th className="p-2">Customer Contact</th>
                 <th className="p-2">Total Amount</th>
+                <th className="p-2">Sold By</th>
                 <th className="p-2">Created At</th>
               </tr>
             </thead>
             <tbody>
-              {monthlySale.sales.map((sale) => (
+              {monthlySale.sales.map((sale:any) => (
                 <tr key={sale.invoiceId} className="text-center hover:bg-gray-200 dark:hover:bg-gray-800">
                   <td className="p-2">{sale.invoiceId}</td>
                   <td className="p-2">{sale.customerName || 'N/A'}</td>
                   <td className="p-2">{sale.customerContact || 'N/A'}</td>
                   <td className="p-2">INR {sale.totalAmount?.toFixed(2)}</td>
+                  <td className="p-2">{sale?.soldBy?.username}</td>
                   <td className="p-2">{new Date(sale.createdAt).toLocaleString()}</td>
                 </tr>
               ))}

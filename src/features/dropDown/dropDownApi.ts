@@ -30,6 +30,7 @@ export const fetchDropdownOptions = createAsyncThunk(
   export const deleteDropdownOption = createAsyncThunk(
     "dropdown/deleteOption",
     async (option: DropdownOption) => {
+      console.log(option)
       await axiosInstance.delete(`/dropdowns/${option._id}`);
       return  option;
     }
