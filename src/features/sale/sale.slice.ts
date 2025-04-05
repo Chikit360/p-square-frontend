@@ -20,13 +20,17 @@ interface MonthlySale {
 interface SalesState {
   sales: MonthlySale[];
   loading: boolean;
-  error: string | null;
+  error: boolean;
+  message: string | null;
+  success: boolean;
 }
 
 const initialState: SalesState = {
   sales: [],
   loading: false,
-  error: null,
+  error: false,
+  message: null,
+  success: false,
 };
 
 const sellSlice = createSlice({
@@ -36,22 +40,25 @@ const sellSlice = createSlice({
     clearSales: (state) => {
       state.sales = [];
     },
+    clearSalesMessage: (state) => {
+      state.success = false;
+      state.error = false;
+      state.message = null;
+    }
   },
   extraReducers: (builder) => {
     builder
       // Create Sale
       .addCase(createSale.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(createSale.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        const { data, status, message, error } = action.payload;
+        const { data, } = action.payload;
 
-        if (status !== 200) {
-          state.error = error || message;
-          return;
-        }
+        console.log(data)
+
 
         const monthYear = new Date(data.createdAt);
         const year = monthYear.getFullYear();
@@ -70,15 +77,17 @@ const sellSlice = createSlice({
             sales: [data],
           });
         }
+        state.success = true;
+        state.message = action.payload.message;
       })
-      .addCase(createSale.rejected, (state, action) => {
+      .addCase(createSale.rejected, (state) => {
         state.loading = false;
-        state.error = String(action.payload) || 'Failed to create sale';
+        state.error = true ;
       })
       // Get All Sales
       .addCase(getAllSales.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(getAllSales.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
@@ -91,13 +100,13 @@ const sellSlice = createSlice({
 
         state.sales = data;
       })
-      .addCase(getAllSales.rejected, (state, action) => {
+      .addCase(getAllSales.rejected, (state) => {
         state.loading = false;
-        state.error = String(action.payload) || 'Failed to fetch sales';
+        state.error = true ;
       });
   },
 });
 
-export const { clearSales } = sellSlice.actions;
+export const { clearSales,clearSalesMessage } = sellSlice.actions;
 
 export default sellSlice.reducer;

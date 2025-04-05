@@ -58,6 +58,14 @@ const authSlice = createSlice({
       Cookies.remove('token');
       localStorage.removeItem('user');
     },
+    clean: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.success = false;
+      state.message = null;
+      Cookies.remove('token');
+      localStorage.removeItem('user');
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -83,6 +91,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, setUser } = authSlice.actions;
+export const { logout, setUser,clean } = authSlice.actions;
 export const getUserRole = (state: { auth: AuthState }) => state.auth.user?.role;
 export default authSlice.reducer;

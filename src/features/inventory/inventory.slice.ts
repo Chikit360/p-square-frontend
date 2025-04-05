@@ -18,42 +18,52 @@ interface InventoryData {
 interface InventoryState {
   inventoryData: InventoryData[];
   loading: boolean;
-  error: string | null;
+  error: boolean ;
+  message: string | null;
+  success: boolean;
 }
 
 // Initial State
 const initialState: InventoryState = {
   inventoryData: [],
   loading: false,
-  error: null,
+  error: false,
+  message: null,
+  success: false,
 };
 
 // Stock Slice
 const stockSlice = createSlice({
   name: 'inventory',
   initialState,
-  reducers: {},
+  reducers: {
+    clearInventoryMessage: (state) => {
+      state.success = false;
+      state.error = false;
+      state.message = null;
+    },
+  },
   extraReducers: (builder) => {
     // Fetch Inventory Details
     builder
       .addCase(fetchInventoryDetailsByMedicineId.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(fetchInventoryDetailsByMedicineId.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.inventoryData = action.payload.data; // Corrected
+        state.success = true;
+        // state.message = action.payload.message;
       })
       .addCase(fetchInventoryDetailsByMedicineId.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error?.message || 'Failed to fetch inventory details';
-      });
-
-    // Add or Update Stock
-    builder
+        state.error = true;
+        state.message = action.error?.message || 'Failed to fetch inventory details';
+      })
       .addCase(addOrUpdateInventory.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(addOrUpdateInventory.fulfilled, (state, action: PayloadAction<any>) => {
         const updatedStock = action.payload.data;
@@ -101,35 +111,45 @@ const stockSlice = createSlice({
         }
       
         state.loading = false;
+        state.success = true;
+        state.message = action.payload.message;
       })
       
       
       
-      .addCase(addOrUpdateInventory.rejected, (state, action) => {
+      .addCase(addOrUpdateInventory.rejected, (state,) => {
         state.loading = false;
-        state.error = action.error?.message || 'Failed to update stock data';
+        state.error = false;
       }).addCase(addInventory.pending, (state) => {
         state.loading = true;
       })
       .addCase(addInventory.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.inventoryData.push(action.payload);
+        state.success = true;
+        state.message = action.payload.message;
       })
       .addCase(addInventory.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to add inventory';
+        state.error = false;
+      state.message = action.error?.message || 'Failed to add inventory';
       }).addCase(updateInventory.pending, (state) => {
         state.loading = true;
       })
       .addCase(updateInventory.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.inventoryData = action.payload;
+        state.success = true;
+        state.message = action.payload.message;
+
       })
       .addCase(updateInventory.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to update inventory';
+        state.error = false;
+        state.message = action.error?.message || 'Failed to update inventory';
       });
   },
 });
 
+export const { clearInventoryMessage } = stockSlice.actions;
 export default stockSlice.reducer;

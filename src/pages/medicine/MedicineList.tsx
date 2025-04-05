@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {  useSelector } from 'react-redux';
+import {  useDispatch, useSelector } from 'react-redux';
 import {  RootState } from '../../features/store';
 
 import { PencilIcon, TrashBinIcon } from '../../icons';
@@ -9,11 +9,14 @@ import Button from '../../components/ui/button/Button';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../../components/ui/table/index';
 import { Link, useSearchParams } from 'react-router';
 import { Medicine } from '../../helpers/interfaces';
+import { toast } from 'react-toastify';
+import { clearMedicineMessage } from '../../features/medicine/medicine.slice';
 
 
 export default function MedicineList() {
-  const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
+  const { medicines, loading, error,message } = useSelector((state: RootState) => state.medicine);
   const [searchParams]=useSearchParams();
+  const dispatch=useDispatch()
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
 
   useEffect(() => {
@@ -26,6 +29,17 @@ export default function MedicineList() {
         setFilteredData(medicines.filter(item => item.name.toLowerCase().includes(q?.toLowerCase() || '')));
       }
     }, [searchParams, medicines]);
+
+     useEffect(() => {
+        if (error) {
+          toast.error(message);
+          // Optionally, clear the error state here if needed
+        }
+        return ()=>{
+              dispatch(clearMedicineMessage())
+            }
+      
+      }, [error, message]);
 
   if (loading) return <LoadingOverlay isLoading={loading} />;
   if (error) return <p>Error: {error}</p>;

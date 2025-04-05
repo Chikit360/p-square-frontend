@@ -9,13 +9,15 @@ import { Medicine } from '../../helpers/interfaces';
 import { Link, useNavigate, useSearchParams } from 'react-router';
 import { getUserRole } from '../../features/auth/user.slice';
 import { PencilIcon } from '../../icons';
+import { clearInventoryMessage } from '../../features/inventory/inventory.slice';
+import { toast } from 'react-toastify';
 
 
 const Stock: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [searchParams] = useSearchParams();
   const navigate=useNavigate()
-  const { inventoryData, loading: stockLoader, } = useSelector((state: RootState) => state.inventory);
+  const { inventoryData, loading: stockLoader,message } = useSelector((state: RootState) => state.inventory);
   const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
   const [selectedItem, setSelectedItem] = useState<Medicine | null>(null);
   const [filteredData, setFilteredData] = useState<Medicine[]>([])
@@ -27,12 +29,15 @@ const Stock: React.FC = () => {
     }
   }, [dispatch, selectedItem]);
 
-  // for default select first item of table
-  // useEffect(() => {
-  //   if (medicines?.length > 0) {
-  //     setSelectedItem(medicines[0]);
-  //   }
-  // }, [medicines]);
+  useEffect(() => {
+      if (error) {
+        toast.error(message);
+      }
+      
+      return ()=>{
+        dispatch(clearInventoryMessage())
+      }
+    }, [error, message]);
 
   useEffect(() => {
     const q = searchParams.get('q');

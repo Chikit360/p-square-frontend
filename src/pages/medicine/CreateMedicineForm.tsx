@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,6 +10,8 @@ import Select from 'react-select';
 import ConfirmationPopup from '../../components/ui/pop-up/ConfirmationPopUp';
 import Label from '../../components/form/Label';
 import { DropdownOption } from '../../helpers/interfaces';
+import { toast } from 'react-toastify';
+import { clearMedicineMessage, } from '../../features/medicine/medicine.slice';
 
 const UNIT_ENUM = ['pieces', 'boxes', 'bottles', 'packs', 'strips'];
 
@@ -40,7 +42,7 @@ const CreateMedicineForm = () => {
   const navigate = useNavigate();
   const { recentCreatedMedicineId } = useSelector((state: RootState) => state.medicine);
   const { dropdowns, loading: DDLoading } = useSelector((state: RootState) => state.dropDown);
-  const { loading } = useSelector((state: RootState) => state.medicine);
+  const { error,message,success,loading } = useSelector((state: RootState) => state.medicine);
   const [openConfirmationBox, setOpenConfirmationBox] = useState<boolean>(false);
 
   const handleSubmit = async (
@@ -66,6 +68,21 @@ const CreateMedicineForm = () => {
     prescriptionRequired: faker.datatype.boolean(),
   });
   
+ useEffect(() => {
+    if (error) {
+      toast.error(message);
+      // Optionally, clear the error state here if needed
+    }
+  
+    if (success && message) {
+      toast.success(message);
+      // Optionally, reset success state here if needed
+    }
+    return ()=>{
+      dispatch(clearMedicineMessage())
+    }
+  }, [error, success, message]);
+
 
   return (
     <>

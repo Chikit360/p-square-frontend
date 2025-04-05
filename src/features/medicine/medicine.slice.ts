@@ -1,5 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, } from '@reduxjs/toolkit';
 import { createMedicine, getAllMedicines, deleteMedicineById, getMedicineById, updateMedicineById, searchMedicine } from './medicineApi';
+import { GlobalErrorPayload } from '../../helpers/interfaces';
 
 interface Medicine {
   _id:string,
@@ -34,7 +35,8 @@ interface MedicineState {
   selectedMedicine: Medicine | null;
   success:boolean,
   loading: boolean;
-  error: string | null;
+  error: boolean;
+  message:string|null
 }
 
 const initialState: MedicineState = {
@@ -44,50 +46,69 @@ const initialState: MedicineState = {
   selectedMedicine: null,
   success: false,
   loading: false,
-  error: null,
+  error: false,
+  message:null
 };
 
 const medicineSlice = createSlice({
   name: 'medicines',
   initialState,
-  reducers: {},
+  reducers: {
+    clearMedicineMessage:(state)=>{
+     
+        state.success= false,
+        state.error=false,
+        state.message= null
+      
+    }
+  },
   extraReducers: (builder) => {
     builder
     .addCase(searchMedicine.pending, (state) => {
       state.loading = true;
-      state.error = null;
+      state.error = false;
+      state.success = false;
     })
     .addCase(searchMedicine.fulfilled, (state, action) => {
       state.loading = false;
       state.success = true;
       state.searchResult = action.payload.data;
     })
-    .addCase(searchMedicine.rejected, (state, action) => {
+    .addCase(searchMedicine.rejected, (state) => {
       state.loading = false;
-      state.error = action.error.message || 'Failed to fetch medicines';
+      state.success = false;
+      state.error = true;
+      // state.message = action.payload.message;
     })
       .addCase(getAllMedicines.pending, (state) => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
+        state.success = false;
       })
       .addCase(getAllMedicines.fulfilled, (state, action) => {
         state.loading = false;
         state.medicines = action.payload.data;
+        state.success = true;
+        // state.message=action.payload.message
       })
       .addCase(getAllMedicines.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || 'Failed to fetch medicines';
+        state.success = false;
+        state.error = true;
+        const { message } = action.payload as GlobalErrorPayload;
+          state.message = message;
       })
       .addCase(createMedicine.pending, (state) => {
         state.loading = true;
         state.success = false;
-        state.error = null;
+        state.error = false;
       })
       .addCase(createMedicine.fulfilled, (state, action) => {
         state.medicines.push(action.payload.data);
         state.recentCreatedMedicineId = action.payload.data._id;
         state.success = true;
         state.loading = false;
+        state.message = action.payload.message;
       })
       .addCase(deleteMedicineById.fulfilled, (state, action) => {
         state.medicines = state.medicines.filter((medicine) => medicine.medicineId !== action.payload);
@@ -100,9 +121,14 @@ const medicineSlice = createSlice({
         const index = state.medicines.findIndex((medicine) =>String(medicine._id) === String(action.payload.data._id));
         if (index !== -1) {
           state.medicines[index] = {...action.payload.data}; // correct in future
+          state.message = action.payload.message;
+          state.success = true;
+          state.loading = false;
         }
       });
   },
 });
+
+export const {clearMedicineMessage}= medicineSlice.actions;
 
 export default medicineSlice.reducer;

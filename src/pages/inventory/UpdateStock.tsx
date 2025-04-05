@@ -4,6 +4,8 @@ import { AppDispatch, RootState } from '../../features/store';
 import { addOrUpdateInventory, fetchInventoryDetailsByMedicineId } from '../../features/inventory/inventoryApi';
 import { InventoryData } from '../../helpers/interfaces';
 import { useLocation, useNavigate, useParams } from 'react-router';
+import { toast } from 'react-toastify';
+import { clearInventoryMessage } from '../../features/inventory/inventory.slice';
 
 
 
@@ -14,7 +16,7 @@ interface UpdateStockProps {
 const UpdateStock: React.FC<UpdateStockProps> = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate=useNavigate()
-  const { inventoryData, } = useSelector((state: RootState) => state.inventory);
+  const { inventoryData,success,message,error } = useSelector((state: RootState) => state.inventory);
   const {id}=useParams<{id:string}>();
   const location = useLocation();
 
@@ -76,12 +78,27 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
       await dispatch(addOrUpdateInventory(formData));
       // this navigation will handle proper but for now, only for client purpose 
       navigate('/medicine/items/add')
-      alert('Stock updated successfully!');
+      
     } catch (error) {
       console.error('Error updating stock:', error);
       alert('Failed to update stock. Please try again.');
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(message);
+      // Optionally, clear the error state here if needed
+    }
+  
+    if (success && message) {
+      toast.success(message);
+      // Optionally, reset success state here if needed
+    }
+    return ()=>{
+      dispatch(clearInventoryMessage())
+    }
+  }, [error, success, message]);
 
   return (
     <div className="p-8">

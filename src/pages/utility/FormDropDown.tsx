@@ -7,10 +7,12 @@ import { addDropdownOption, deleteDropdownOption, updateDropdownOption } from ".
 import ConfirmationPopup from "../../components/ui/pop-up/ConfirmationPopUp";
 import { PencilIcon, TrashBinIcon } from "../../icons";
 import { useSearchParams } from "react-router";
+import { toast } from "react-toastify";
+import { clearDDMessage } from "../../features/dropDown/dropDownSlice";
 
 const FormDropDown = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { dropdowns, loading } = useSelector((state: RootState) => state.dropDown);
+  const { dropdowns, loading,success,error,message } = useSelector((state: RootState) => state.dropDown);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [confrmBox, setConfrmBox] = useState(false);
   const [deleteItem, setDeleteItem] = useState<any | null>(null); // Store item to delete
@@ -29,6 +31,20 @@ const FormDropDown = () => {
       setFilteredData(dropdowns['form'].filter(item => item.label.toLowerCase().includes(q?.toLowerCase() || '')));
     }
   }, [searchParams, dropdowns]);
+  useEffect(() => {
+    if (error) {
+      toast.error(message);
+      // Optionally, clear the error state here if needed
+    }
+  
+    if (success && message) {
+      toast.success(message);
+      // Optionally, reset success state here if needed
+    }
+    return ()=>{
+      dispatch(clearDDMessage())
+    }
+  }, [error, success, message]);
 
   const formik = useFormik({
     initialValues: {

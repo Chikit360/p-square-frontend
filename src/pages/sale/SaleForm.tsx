@@ -9,6 +9,8 @@ import { createSale } from '../../features/sale/saleApi';
 import { activeMedicines } from '../../features/medicine/medicineApi';
 import Select from 'react-select'
 import Label from '../../components/form/Label';
+import { toast } from 'react-toastify';
+import { clearSalesMessage } from '../../features/sale/sale.slice';
 
 interface DiscountTypeOptionIF {
   label: string,
@@ -53,6 +55,7 @@ const SaleForm: React.FC = () => {
   const [_, setSelectedMedicineId] = useState<string>('');
   const [, setIsOpen] = useState(false)
   const [discountAmountFinal, setDiscountAmountFinal] = useState<number>(0);
+  const {error,message,success} = useSelector((state: RootState) => state.sales);
 
   const [, setPdfBlob] = useState<Blob | null>(null); // Store PDF Blob for preview
 
@@ -60,6 +63,21 @@ const SaleForm: React.FC = () => {
   useEffect(() => {
     dispatch(activeMedicines());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (error) {
+      toast.error(message);
+      // Optionally, clear the error state here if needed
+    }
+  
+    if (success && message) {
+      toast.success(message);
+      // Optionally, reset success state here if needed
+    }
+    return ()=>{
+      dispatch(clearSalesMessage())
+    }
+  }, [error, success, message]);
 
   const handleAddToCart = (medicine: Medicine): void => {
     setCart((prevCart) => {
@@ -227,7 +245,7 @@ const SaleForm: React.FC = () => {
         <Formik
           initialValues={{ customerName: '', customerContact: '' }}
           validationSchema={validationSchema}
-          onSubmit={(values, { resetForm }) => {
+          onSubmit={async(values, { resetForm }) => {
             const saleData: SaleData = {
               ...values,
               items: cart.map((c) => ({
@@ -237,7 +255,7 @@ const SaleForm: React.FC = () => {
                 quantity: c.quantity,
               })),
             };
-            dispatch(createSale(saleData));
+            await dispatch(createSale(saleData));
             generatePDF(cart, { name: values.customerName, mobile: values.customerContact }, discountType?.value==="manual_discount"? totalDiscount: discountAmountFinal, 0);
             setIsOpen(true)
             resetForm();

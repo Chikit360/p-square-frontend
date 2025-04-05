@@ -9,13 +9,14 @@ import Label from '../../components/form/Label';
 import { useNavigate, useParams } from 'react-router';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import { DropdownOption, Medicine } from '../../helpers/interfaces';
+import { toast } from 'react-toastify';
 
 const UNIT_ENUM = ['pieces', 'boxes', 'bottles', 'packs', 'strips'];
 
 const UpdateMedicineForm = () => {
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
-    const { medicines, loading, error } = useSelector((state: RootState) => state.medicine);
+    const { medicines, loading, error,message,success } = useSelector((state: RootState) => state.medicine);
     const { dropdowns, loading: DDLoading } = useSelector((state: RootState) => state.dropDown);
     const { id } = useParams<{ id: string }>();
 
@@ -65,6 +66,18 @@ const UpdateMedicineForm = () => {
             setSubmitting(false);
         }
     };
+
+    useEffect(() => {
+        if (error) {
+          toast.error(message);
+          // Optionally, clear the error state here if needed
+        }
+      
+        if (success && message) {
+          toast.success(message);
+          // Optionally, reset success state here if needed
+        }
+      }, [error, success, message]);
 
 
     if (loading) return <LoadingOverlay isLoading={loading} />;

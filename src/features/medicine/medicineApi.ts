@@ -27,8 +27,11 @@ export const getAllMedicines = createAsyncThunk(
       const response = await axiosInstance.get("/medicines");
       return response.data;
     } catch (error) {
+
+      
+      
       if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+        return error.response?.data // rejectWithValue(error.response?.data || 'An error occurred');
       }
       return rejectWithValue('An unexpected error occurred');
     }
@@ -111,7 +114,7 @@ export const searchMedicine = createAsyncThunk(
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        return rejectWithValue(error.response?.data?.message || 'An error occurred');
+        return rejectWithValue(error.response?.data);
       }
       return rejectWithValue('An unexpected error occurred');
     }

@@ -7,19 +7,29 @@ interface DropdownState {
       [key: string]: DropdownOption[]; // Stores different dropdown types dynamically
     };
     loading: boolean;
-    error: string | null;
+    error: boolean;
+    message: string | null;
+    success: boolean;
   }
   
   const initialState: DropdownState = {
     dropdowns: {}, // Each dropdown type will be stored dynamically
     loading: false,
-    error: null,
+    error: false,
+    message: null,
+    success: false,
   };
 
   const dropdownSlice = createSlice({
     name: "dropdown",
     initialState,
-    reducers: {},
+    reducers: {
+      clearDDMessage: (state) => {
+        state.success = false;
+        state.error = false;
+        state.message = null;
+      }
+    },
     extraReducers: (builder) => {
       builder
         .addCase(fetchDropdownOptions.pending, (state) => { state.loading = true; })
@@ -31,6 +41,9 @@ interface DropdownState {
           console.log(action.payload.data)
           console.log(action.payload.data.inputFieldName)
           state.dropdowns[action.payload.data.inputFieldName]?.push(action.payload.data);
+          state.message=action.payload.message;
+          state.success=action.payload.success;
+          state.loading=false;
         })
         .addCase(updateDropdownOption.fulfilled, (state, action) => {
           console.log(action.payload.data)
@@ -38,15 +51,21 @@ interface DropdownState {
           state.dropdowns[action.payload.data.inputFieldName] = state.dropdowns[action.payload.data.inputFieldName].map(
             (opt) => (opt._id === action.payload.data._id ? action.payload.data : opt)
           );
+          state.message=action.payload.message;
+          state.success=action.payload.success;
         })
         .addCase(deleteDropdownOption.fulfilled, (state, action) => {
           state.dropdowns[action.payload.inputFieldName] = state.dropdowns[action.payload.inputFieldName].filter(
             (opt) => opt._id !== action.payload._id
           );
+          state.message="Deleted successfully";
+          state.success=true;
+        
         });
     },
   });
   
+  export const {clearDDMessage}=dropdownSlice.actions;
   export default dropdownSlice.reducer;
   
   

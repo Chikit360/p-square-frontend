@@ -40,3 +40,12 @@ export interface Medicine {
     form: DropdownOption[];
     strength: DropdownOption[];
   }
+
+  // Define a global error payload interface
+export interface GlobalErrorPayload {
+  message: string;
+  error: boolean;
+  status: number;
+  success: boolean;
+  data: null;
+}
