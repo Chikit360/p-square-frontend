@@ -30,11 +30,11 @@ const initialValues = {
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required('Medicine name is required'),
-  genericName: Yup.string().required('Generic name is required'),
-  form: Yup.string().required('Form is required'),
-  strength: Yup.string().required('Strength is required'),
-  unit: Yup.string().oneOf(UNIT_ENUM, 'Invalid unit').required('Unit is required'),
-  prescriptionRequired: Yup.boolean(),
+  genericName: Yup.string().optional(),
+  form: Yup.string().optional(),
+  strength: Yup.string().optional(),
+  unit: Yup.string().oneOf(UNIT_ENUM, 'Invalid unit').optional(),
+  prescriptionRequired: Yup.boolean().optional(),
 });
 
 const CreateMedicineForm = () => {
@@ -50,8 +50,12 @@ const CreateMedicineForm = () => {
     { resetForm }: FormikHelpers<typeof initialValues>
   ) => {
     
-    await dispatch(createMedicine(values));
-    setOpenConfirmationBox(true);
+    const response=await dispatch(createMedicine(values));
+    console.log(response)
+    if ( response.payload.status === 200) {
+      setOpenConfirmationBox(true);
+    }
+    
     resetForm();
   };
 
@@ -69,6 +73,7 @@ const CreateMedicineForm = () => {
   });
   
  useEffect(() => {
+ 
     if (error) {
       toast.error(message);
       // Optionally, clear the error state here if needed
@@ -100,7 +105,7 @@ const CreateMedicineForm = () => {
                 {Object.keys(initialValues).map((key) => (
                   <div key={key} className="mb-4">
                     <Label>
-                      {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}{<span className='text-red-400' >*</span>}
+                      {key.replace(/([A-Z])/g, ' $1').replace(/^./, (str) => str.toUpperCase())}{key==="name"&&<span className='text-red-400' >*</span>}
                     </Label>
 
                     {/* React-Select for Form & Strength */}
