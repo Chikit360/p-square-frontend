@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { loginUser } from './authApi';
+import { loginUser, logoutUser } from './authApi';
 
 import Cookies from 'js-cookie';
 
@@ -38,6 +38,8 @@ const initialState: AuthState = {
   message:null
 };
 
+
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -50,14 +52,14 @@ const authSlice = createSlice({
         Cookies.set('token', action.payload.data.token, { expires: 7 });
       }
     },
-    logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-      state.success = true;
-      state.message = 'Logout successful';
-      Cookies.remove('token');
-      localStorage.removeItem('user');
-    },
+    // logout: (state) => {
+    //   state.user = null;
+    //   state.isAuthenticated = false;
+    //   state.success = true;
+    //   state.message = 'Logout successful';
+    //   Cookies.remove('token');
+    //   localStorage.removeItem('user');
+    // },
     clean: (state) => {
       state.user = null;
       state.isAuthenticated = false;
@@ -78,19 +80,31 @@ const authSlice = createSlice({
         state.user = action.payload.data;
         state.isAuthenticated = true;
         Cookies.set('token', action.payload.data.token!, { expires: 7 });
-        localStorage.setItem('user', JSON.stringify(action.payload.data.token));
+        localStorage.setItem('user', JSON.stringify(action.payload.data));
         state.message = action.payload.message;
         state.success = action.payload.success;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        console.log(action.payload);
         state.loading = false;
         state.error = true;
         state.message = (action.payload as { message?: string })?.message || 'An error occurred';
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.success = true;
+        state.message = 'Logged out successfully';
+        Cookies.remove('token');
+        localStorage.removeItem('user');
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = true;
+        state.message = (action.payload as { message?: string })?.message || 'Logout failed';
       });
   },
 });
 
-export const { logout, setUser,clean } = authSlice.actions;
+
+export const {  setUser,clean } = authSlice.actions;
 export const getUserRole = (state: { auth: AuthState }) => state.auth.user?.role;
 export default authSlice.reducer;
