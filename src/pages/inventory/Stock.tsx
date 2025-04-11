@@ -177,11 +177,8 @@ const Stock: React.FC = () => {
                               {
                                 userRole==="admin"?
                                 <td className="cursor-pointer p-3"><div onClick={()=>{
-                                  navigate(`/medicine/inventory/${selectedItem._id}/add-update`,{
-                                    state: {
-                                      batchNumber: stock.batchNumber,
-                                      expiryDate: stock.expiryDate,
-                                    },
+                                  navigate(`/medicine/inventory/${selectedItem._id}/add-update?batchNumber=${stock.batchNumber}&expiryDate=${stock.expiryDate}`,{
+                                   replace:true
                                   })
                                 }} ><PencilIcon/></div> </td>:null
                               }

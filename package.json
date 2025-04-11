@@ -52,6 +52,7 @@
     "swiper": "^11.2.3",
     "tailwind-merge": "^3.0.1",
     "uninstall": "^0.0.0",
+    "use-debounce": "^10.0.4",
     "yup": "^1.6.1"
   },
   "devDependencies": {
