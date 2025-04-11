@@ -2,19 +2,22 @@ import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import MonthlyTarget from "../../components/ecommerce/MonthlyTarget";
 import PageMeta from "../../components/common/PageMeta";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import { toast } from "react-toastify";
 import { fetchDashboardAnalytics } from "../../features/admin/adminApi";
+import ChartTab, { ChartRange } from "../../components/common/ChartTab";
 
 export default function Home() {
   const { error, success, message } = useSelector((state: RootState) => state.auth);
   const { dashboardData,loading } = useSelector((state: RootState) => state.admin);
+  const [selected, setSelected] = useState<ChartRange>("daily");
+  
   const dispatch = useDispatch<AppDispatch>();
   
   useEffect(() => {
-    dispatch(fetchDashboardAnalytics());
+    
       if (error) {
         toast.error(message);
         // Optionally, clear the error state here if needed
@@ -25,6 +28,13 @@ export default function Home() {
         // Optionally, reset success state here if needed
       }
     }, [error, success, message]);
+
+    useEffect(() => {
+      dispatch(fetchDashboardAnalytics(selected));
+    
+      
+    }, [dispatch,selected])
+    
 
     if (loading) {
       return <div>Loading...</div>;
@@ -46,7 +56,8 @@ export default function Home() {
           <MonthlyTarget />
         </div>
 
-        <div className="col-span-12">
+        <div className="col-span-12 bg-white dark:bg-white/[0.03] rounded-2xl border border-gray-200 p-5 dark:border-gray-800 md:p-6 ">
+          <ChartTab onChange={setSelected} selected={selected} />
           <StatisticsChart chart={dashboardData?.chart} />
         </div>
 
