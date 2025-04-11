@@ -135,21 +135,27 @@ const SaleForm: React.FC = () => {
     doc.text('INVOICE', 105, 20, { align: 'center' });  // Center-align the title
 
     // Customer Information Section (Clear Spacing)
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(12);
-    doc.text(`Customer Name: ${customer.name}`, 14, 30);
-    doc.text(`Mobile: ${customer.mobile}`, 14, 35);
-    doc.text(`GST Registered, Tax ID: XYZ123456`, 14, 40);  // GST info on the left top
-
-    // Invoice ID (Right Aligned, Positioned Near the Top-Right Corner)
     const invoiceID = `INV-${new Date().getTime()}`;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(12);
-    doc.text(`Invoice ID: ${invoiceID}`, 200, 30, { align: 'right' });  // Right-align the invoice ID
+    doc.text(`Invoice ID: ${invoiceID}`, 14, 30);
+    doc.setFontSize(10);
+    doc.text(`Customer Name: ${customer.name}`, 14, 35);
+    doc.text(`Mobile: ${customer.mobile}`, 14, 40);
+    doc.text(`GST Registered, Tax ID: XYZ123456`, 14, 45);  // GST info on the left top
+
+    // Invoice ID (Right Aligned, Positioned Near the Top-Right Corner)
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(14);
+    doc.text(`P SQUARE PHARMACY`, 200, 30, { align: 'right' });  // Right-align the invoice ID
+    doc.setFontSize(10);
+    doc.text(`BLOCK C-A/1 HOLI CHOWK SANGAM VIHAR`, 200, 35, { align: 'right' });  // Right-align the invoice ID
+    doc.text(`NEAR POST OFFICE, NEW DELHI`, 200, 40, { align: 'right' });  // Right-align the invoice ID
 
     // Add a Horizontal Line Below the Header (To separate the header section)
     doc.setLineWidth(0.5);
-    doc.line(14, 45, 200, 45);  // Line from left to right below header
+    doc.line(14, 50, 200, 50);  // Line from left to right below header
 
     // Table: Item List (With a Stylish Table Layout)
     const tableData = saleData.map((item, index) => [
@@ -163,7 +169,7 @@ const SaleForm: React.FC = () => {
     autoTable(doc, {
       head: [['#', 'Medicine', 'Quantity', 'Price', 'Total']],
       body: tableData,
-      startY: 50,
+      startY: 60,
       theme: 'grid',
       styles: { fontSize: 10, cellPadding: 3, font: 'helvetica' },
       headStyles: { fillColor: [22, 160, 133], textColor: [255, 255, 255], fontStyle: 'bold' }, // Stylish header row

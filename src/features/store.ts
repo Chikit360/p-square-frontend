@@ -6,10 +6,12 @@ import activeMedicineReducer from '../features/medicine/activeMedicine.slice'
 import authMiddleware from './middlewares/authMiddleware'
 import inventoryReducer from './inventory/inventory.slice';
 import customerReducer from './customer/customerSlice';
+import adminReducer from './admin/adminSlice';
 import dropdownReducer from './dropDown/dropDownSlice';
 
 const store = configureStore({
   reducer: {
+    admin: adminReducer,
     auth: authReducer,
     medicine:medicineReducer,
     inventory:inventoryReducer,
