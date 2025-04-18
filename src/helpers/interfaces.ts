@@ -49,3 +49,11 @@ export interface GlobalErrorPayload {
   success: boolean;
   data: null;
 }
+export interface NotificationI {
+  _id: string;
+  userId: string;
+  title: string;
+  message: string;
+  isRead: boolean;
+  createdAt: string; // ISO date string
+}
