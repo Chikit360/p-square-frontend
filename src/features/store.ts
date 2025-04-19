@@ -9,6 +9,7 @@ import customerReducer from './customer/customerSlice';
 import adminReducer from './admin/adminSlice';
 import dropdownReducer from './dropDown/dropDownSlice';
 import notificationReducer from './notifications/notificationSlice';
+import fileUploadReducer from './file-upload/fileUploadSlice';
 
 const store = configureStore({
   reducer: {
@@ -20,7 +21,8 @@ const store = configureStore({
     sales: saleReducer,
     customers:customerReducer,
     dropDown:dropdownReducer,
-    notifications:notificationReducer
+    notifications:notificationReducer,
+    uploadFile:fileUploadReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authMiddleware),

@@ -10,7 +10,7 @@ import { NotificationI } from "../../helpers/interfaces";
 
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const [notifying, setNotifying] = useState(true);
+  const [_, setNotifying] = useState(true);
   const {unreadCount,loading,notifications}=useSelector((state: RootState) => state.notifications);
   const dispatch=useDispatch<AppDispatch>();
 
