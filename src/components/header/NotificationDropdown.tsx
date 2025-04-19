@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Dropdown } from "../ui/dropdown/Dropdown";
-import { DropdownItem } from "../ui/dropdown/DropdownItem";
+
 import { Link } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
@@ -11,12 +10,12 @@ import { NotificationI } from "../../helpers/interfaces";
 export default function NotificationDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [_, setNotifying] = useState(true);
-  const {unreadCount,loading,notifications}=useSelector((state: RootState) => state.notifications);
-  const dispatch=useDispatch<AppDispatch>();
+  const { unreadCount, loading, notifications } = useSelector((state: RootState) => state.notifications);
+  const dispatch = useDispatch<AppDispatch>();
 
   async function toggleDropdown() {
     setIsOpen(!isOpen);
-    if(unreadCount>0){
+    if (unreadCount > 0) {
 
       await dispatch(markNotificationsAsRead());
     }
@@ -37,7 +36,7 @@ export default function NotificationDropdown() {
         className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full dropdown-toggle hover:text-gray-700 h-11 w-11 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
         onClick={handleClick}
       >
-          <span className="absolute flex justify-center items-center -top-1 -right-1 p-1 rounded-full border text-[10px] w-[15px] h-[15px] ">{unreadCount}</span>
+        <span className="absolute flex justify-center items-center -top-1 -right-1 p-1 rounded-full border text-[10px] w-[15px] h-[15px] ">{unreadCount}</span>
         {/* <span
           className={`absolute right-0 top-0.5 z-10 h-2 w-2 rounded-full bg-orange-400 ${
             !notifying ? "hidden" : "flex"
@@ -114,9 +113,9 @@ export default function NotificationDropdown() {
                     d="M4 12a8 8 0 018-8v8H4z"
                   ></path>
                 </svg>
-                </div>):
-                ( 
-                notifications.map((notification:NotificationI) => (
+              </div>) :
+              (
+                notifications.map((notification: NotificationI) => (
                   <li key={notification._id}>
                     <DropdownItem
                       onItemClick={closeDropdown}
@@ -138,11 +137,11 @@ export default function NotificationDropdown() {
                           <span className="font-medium text-gray-800 dark:text-white/90">
                             {notification.title}
                           </span>
-                          
+
                         </span>
 
                         <span className="flex items-center gap-2 text-gray-500 text-theme-xs dark:text-gray-400">
-                         
+
                           <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
                           <span>{notification.message}</span>
                         </span>
@@ -152,8 +151,8 @@ export default function NotificationDropdown() {
                 ))
               )}
 
-          
-         
+
+
         </ul>
         <Link
           to="/"

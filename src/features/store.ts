@@ -15,14 +15,14 @@ const store = configureStore({
   reducer: {
     admin: adminReducer,
     auth: authReducer,
-    medicine:medicineReducer,
-    inventory:inventoryReducer,
-    activeMedicines:activeMedicineReducer,
+    medicine: medicineReducer,
+    inventory: inventoryReducer,
+    activeMedicines: activeMedicineReducer,
     sales: saleReducer,
-    customers:customerReducer,
-    dropDown:dropdownReducer,
-    notifications:notificationReducer,
-    uploadFile:fileUploadReducer
+    customers: customerReducer,
+    dropDown: dropdownReducer,
+    notifications: notificationReducer,
+    uploadFile: fileUploadReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(authMiddleware),
