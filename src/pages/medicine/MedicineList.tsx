@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
-import { Link, useSearchParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../features/store';
-import { Link, useSearchParams } from 'react-router-dom';
-
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+// import { FileUploader } from "react-drag-drop-files";
 import { PencilIcon, TrashBinIcon } from '../../icons';
 import LoadingOverlay from '../../components/loader/LoadingOverlay';
 import Button from '../../components/ui/button/Button';
@@ -16,9 +13,7 @@ import { clearMedicineMessage } from '../../features/medicine/medicine.slice';
 import { bulkUploadInventory } from '../../features/file-upload/fileUploadThunk';
 import Label from '../../components/form/Label';
 import { Modal } from '../../components/ui/modal';
-import { bulkUploadInventory } from '../../features/file-upload/fileUploadThunk';
-import Label from '../../components/form/Label';
-import { Modal } from '../../components/ui/modal';
+import DropzoneComponent from '../../components/form/form-elements/DropZone';
 
 export default function MedicineList() {
   const { medicines, loading, error, message } = useSelector((state: RootState) => state.medicine);
@@ -28,6 +23,8 @@ export default function MedicineList() {
   const [file, setFile] = useState<File | null>(null);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     const q = searchParams.get('q');
@@ -62,13 +59,22 @@ useEffect(() => {
   };
 }, [error, message]);
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   if (!file) return toast.warning('Please select a file first');
 
   const formData = new FormData();
   formData.append('file', file);
 
-  dispatch(bulkUploadInventory(formData));
+  const result = await dispatch(bulkUploadInventory(formData));
+  if (bulkUploadInventory.fulfilled.match(result)) {
+    const { resultTable, resultFile } = result.payload;
+    if (resultTable && resultFile) {
+
+      navigate("/file-upload/response", {
+        state: { resultTable, resultFile },
+      });
+    }
+  }
   setShowModal(false);
   setFile(null);
 };
@@ -119,21 +125,21 @@ return (
                 className="border-gray-200 dark:border-gray-900 hover:bg-gray-200 dark:hover:bg-gray-800"
               >
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                  {medicine.medicineCode}
+                  {medicine.medicineCode ?? "NA"}
                 </TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                  <p title={medicine.name} className="whitespace-nowrap max-w-[300px] text-ellipsis overflow-hidden">
-                    {medicine.name ? medicine.name : "NA"}
+                  <p title={medicine.name} className="whitespace-nowrap max-w-[250px] text-ellipsis overflow-hidden">
+                    {medicine.name ?? "NA"}
                   </p>
                 </TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                  {medicine.genericName ? medicine.genericName : "NA"}
+                  {medicine.genericName === "" ? "NA" : medicine.genericName}
                 </TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                  {medicine.form ? medicine.form : "NA"}
+                  {medicine.form === "" ? "NA" : medicine.form}
                 </TableCell>
                 <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                  {medicine.strength ? medicine.strength : "NA"}
+                  {medicine.strength === "" ? "NA" : medicine.strength}
                 </TableCell>
                 <TableCell>
                   <div className="flex gap-2 justify-around items-center">
@@ -153,23 +159,51 @@ return (
     </div>
 
     {/* Modal */}
-    <Modal className='w-1/2 m-auto' isOpen={showModal} onClose={() => setShowModal(false)} >
-      <div className="space-y-4 p-4">
-        <Label>Select XLSX File</Label>
-        <input
-          disabled={fileUploadLoading}
-          type="file"
-          accept=".xlsx, .xls"
-          onChange={(e) => setFile(e.target.files?.[0] || null)}
-        />
-        <Button><a download={true} href="./sample/bulk-medicine-upload-sample.xlsx">Download Sample</a></Button>
-        {file && <p className="text-sm text-gray-600 mt-2">Selected file: <strong>{file.name}</strong></p>}
-        <div className="mt-4 flex justify-end gap-2">
-          <Button onClick={() => setShowModal(false)}>Cancel</Button>
-          <Button disabled={fileUploadLoading} onClick={handleSubmit}>Submit</Button>
+    <Modal className="!w-1/2 !max-w-2xl m-auto rounded-xl shadow-lg" isOpen={showModal} onClose={() => setShowModal(false)}>
+      <div className="p-6 space-y-6">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Upload Medicine Inventory</h2>
+
+        {/* Drag & Drop Uploader */}
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 transition-all duration-300">
+          <DropzoneComponent
+            accept={{
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
+            }}
+            multiple={false}
+            onDrop={(files) => {
+              setFile(files[0] || null)
+              console.log("Only one XLSX file allowed:", files[0]);
+            }}
+          />
+          <p className="text-sm text-gray-500 mt-2">Drag & drop or browse to upload Excel file</p>
+        </div>
+
+        {file && (
+          <p className="text-sm text-gray-600">
+            Selected file: <strong className="text-blue-700">{file.name}</strong>
+          </p>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 mt-4">
+          <Button
+            variant="outline"
+            className="px-4 py-2 border-gray-300 hover:bg-gray-100"
+            onClick={() => setShowModal(false)}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50"
+            disabled={fileUploadLoading}
+            onClick={handleSubmit}
+          >
+            {fileUploadLoading ? "Uploading..." : "Submit"}
+          </Button>
         </div>
       </div>
     </Modal>
+
   </>
 );
 }

@@ -14,6 +14,7 @@ import CustomerHistory from "../pages/user/CustomerHistory";
 import CustomerList from "../pages/user/CustomerList";
 import UserProfiles from "../pages/UserProfiles";
 import StrengthDropDown from "../pages/utility/StrengthDropDown";
+import FileUploadResponsePage from "../pages/FileUploadResponsePage";
 
 export const authRoutes = [
     { path: "/signin", element: <SignIn /> },
@@ -33,6 +34,7 @@ export const authRoutes = [
     { path: "/customer/:id/purchase-history",params:["id"], element: <CustomerHistory /> },
     { path: "/customer-list",params:[], element: <CustomerList /> },
     { path: "/profile",params:[], element: <UserProfiles /> },
+    { path: "/file-upload/response",params:[], element: <FileUploadResponsePage /> },
 
 
     { path: "/admin/strength",params:[], element: <StrengthDropDown /> },
