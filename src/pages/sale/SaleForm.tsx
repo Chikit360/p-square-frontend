@@ -11,6 +11,7 @@ import Select from 'react-select'
 import Label from '../../components/form/Label';
 import { toast } from 'react-toastify';
 import { clearSalesMessage } from '../../features/sale/sale.slice';
+import LoadingOverlay from '../../components/loader/LoadingOverlay';
 
 interface DiscountTypeOptionIF {
   label: string,
@@ -153,6 +154,7 @@ const SaleForm: React.FC = () => {
     doc.setFontSize(10);
     doc.text(`BLOCK C-A/1 HOLI CHOWK SANGAM VIHAR`, 200, 35, { align: 'right' });  // Right-align the invoice ID
     doc.text(`NEAR POST OFFICE, NEW DELHI`, 200, 40, { align: 'right' });  // Right-align the invoice ID
+    doc.text(`Contact us: +917011072245`, 200, 45, { align: 'right' });  // Right-align the invoice ID
 
     // Add a Horizontal Line Below the Header (To separate the header section)
     doc.setLineWidth(0.5);
@@ -252,7 +254,7 @@ const SaleForm: React.FC = () => {
         <Formik
           initialValues={{ customerName: '', customerContact: '' }}
           validationSchema={validationSchema}
-          onSubmit={async (values, { resetForm }) => {
+          onSubmit={async (values, { resetForm, }) => {
             const saleData: SaleData = {
               ...values,
               items: cart.map((c) => ({
@@ -271,7 +273,7 @@ const SaleForm: React.FC = () => {
             setSelectedMedicineId('');
           }}
         >
-          {() => (
+          {({ isSubmitting }) => (
             <Form className="space-y-4">
               <div>
                 <Label>Customer Name</Label>
@@ -334,7 +336,7 @@ const SaleForm: React.FC = () => {
               </div>
 
               <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-                Purchase
+                {isSubmitting ? <LoadingOverlay isLoading={true} /> : "Purchase"}
               </button>
             </Form>
           )}

@@ -17,26 +17,26 @@ import StrengthDropDown from "../pages/utility/StrengthDropDown";
 import FileUploadResponsePage from "../pages/FileUploadResponsePage";
 
 export const authRoutes = [
-    { path: "/signin", element: <SignIn /> },
-    { path: "/signup", element: <SignUp /> }
-  ];
-  
-  export const protectedRoutes = [
-    { path: "/", element: <Home />,params:[] },
-    { path: "/medicine/items",params:[], element: <MedicineList /> },
-    { path: "/medicine/items/:id/edit",params:["id"], element: <UpdateMedicineForm /> },
-    { path: "/medicine/items/add",params:[], element: <CreateMedicineForm /> },
-    { path: "/sale",params:[], element: <SaleHistory /> },
-    { path: "/sale/add",params:[], element: <SaleForm /> },
-    { path: "/medicine/inventory",params:[], element: <Stock /> },
-    { path: "/medicine/inventory/:id/add-update",params:["id"], element: <UpdateStock /> },
-    { path: "/medicine/inventory/:id/add",params:[], element: <AddStock /> },
-    { path: "/customer/:id/purchase-history",params:["id"], element: <CustomerHistory /> },
-    { path: "/customer-list",params:[], element: <CustomerList /> },
-    { path: "/profile",params:[], element: <UserProfiles /> },
-    { path: "/file-upload/response",params:[], element: <FileUploadResponsePage /> },
+  { path: "/signin", element: <SignIn /> },
+  { path: "/signup", element: <SignUp /> }
+];
+
+export const protectedRoutes = [
+  { path: "/", element: <Home />, params: [] },
+  { path: "/medicine/items", params: [], element: <MedicineList /> },
+  { path: "/medicine/items/:id/edit", params: ["id"], element: <UpdateMedicineForm /> },
+  { path: "/medicine/items/add", params: [], element: <CreateMedicineForm /> },
+  { path: "/sale", params: [], element: <SaleHistory /> },
+  { path: "/sale/add", params: [], element: <SaleForm /> },
+  { path: "/medicine/inventory", params: [], element: <Stock /> },
+  { path: "/medicine/inventory/:id/add-update", params: ["id"], element: <UpdateStock /> },
+  { path: "/medicine/inventory/:id/add", params: [], element: <AddStock /> },
+  { path: "/customer-list/:id/purchase-history", params: ["id"], element: <CustomerHistory /> },
+  { path: "/customer-list", params: [], element: <CustomerList /> },
+  { path: "/profile", params: [], element: <UserProfiles /> },
+  { path: "/file-upload/response", params: [], element: <FileUploadResponsePage /> },
 
 
-    { path: "/admin/strength",params:[], element: <StrengthDropDown /> },
-    { path: "/admin/form",params:[], element: <FormDropDown /> }
-  ];
+  { path: "/admin/strength", params: [], element: <StrengthDropDown /> },
+  { path: "/admin/form", params: [], element: <FormDropDown /> }
+];

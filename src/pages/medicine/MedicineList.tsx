@@ -11,7 +11,6 @@ import { Medicine } from '../../helpers/interfaces';
 import { toast } from 'react-toastify';
 import { clearMedicineMessage } from '../../features/medicine/medicine.slice';
 import { bulkUploadInventory } from '../../features/file-upload/fileUploadThunk';
-import Label from '../../components/form/Label';
 import { Modal } from '../../components/ui/modal';
 import DropzoneComponent from '../../components/form/form-elements/DropZone';
 
