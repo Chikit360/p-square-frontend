@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../features/store";
 import { fetchNotifications, markNotificationsAsRead } from "../../features/notifications/notificationApi";
 import { NotificationI } from "../../helpers/interfaces";
+import { Dropdown } from "../ui/Dropdown/Dropdown";
+import { DropdownItem } from "../ui/Dropdown/DropdownItem";
 
 
 export default function NotificationDropdown() {

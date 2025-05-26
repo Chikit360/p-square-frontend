@@ -31,7 +31,8 @@ const discountTypeOptions = [
 interface Medicine {
   _id: string;
   name: string;
-  sellingPrice: number;
+  // sellingPrice: number;
+  mrp: number;
   purchasePrice: number;
 }
 
@@ -107,13 +108,13 @@ const SaleForm: React.FC = () => {
   };
 
   const calculateTotal = (): { subtotal: number; total: number; totalDiscount: number } => {
-    const subtotal = cart.reduce((sum, item) => sum + item.medicine.sellingPrice * item.quantity, 0);
+    const subtotal = cart.reduce((sum, item) => sum + item.medicine.mrp * item.quantity, 0);
 
     let totalDiscount = 0;
 
     // If the user selected manual discount, sum up the individual item discounts
     if (discountType?.value === "manual_discount") {
-      totalDiscount = cart.reduce((sum, item) => sum + item.discount * 0.01 * item.medicine.sellingPrice, 0);
+      totalDiscount = cart.reduce((sum, item) => sum + item.discount * 0.01 * item.medicine.mrp, 0);
     } else if (discountType?.value === "overall_discount") {
       // If overall discount, apply it after calculating subtotal
       totalDiscount = discountAmountFinal * 0.01 * subtotal;
@@ -162,8 +163,8 @@ const SaleForm: React.FC = () => {
       index + 1,
       item.medicine.name,
       item.quantity,
-      `${item.medicine.sellingPrice.toFixed(2)}`,
-      `${(item.quantity * item.medicine.sellingPrice).toFixed(2)}`
+      `${item.medicine.mrp.toFixed(2)}`,
+      `${(item.quantity * item.medicine.mrp).toFixed(2)}`
     ]);
 
     autoTable(doc, {
@@ -181,7 +182,7 @@ const SaleForm: React.FC = () => {
 
     // Total Calculation Section (Using Improved Layout)
     doc.setFontSize(12);
-    const subtotal = saleData.reduce((acc, item) => acc + item.quantity * item.medicine.sellingPrice, 0);
+    const subtotal = saleData.reduce((acc, item) => acc + item.quantity * item.medicine.mrp, 0);
     const totalAfterDiscount = subtotal - (discountType?.value === "overall_discount" ? subtotal * discount * 0.01 : discount);
     const gstAmount = gst ? (totalAfterDiscount * gst) / 100 : 0;
     const totalAmount = totalAfterDiscount + gstAmount;
@@ -257,8 +258,9 @@ const SaleForm: React.FC = () => {
               items: cart.map((c) => ({
                 medicineId: c.medicine._id,
                 name: c.medicine.name,
-                sellingPrice: c.medicine.sellingPrice,
+                // sellingPrice: c.medicine.sellingPrice,
                 quantity: c.quantity,
+                mrp: c.medicine.mrp,
               })),
             };
             await dispatch(createSale(saleData));
@@ -294,7 +296,7 @@ const SaleForm: React.FC = () => {
                         {
                           ...medicine,
                           value: medicine._id,
-                          label: `${medicine.name} - ${medicine.sellingPrice}`
+                          label: `${medicine.name} - ${medicine.mrp}`
                         }
 
                       ))}
@@ -351,7 +353,7 @@ const SaleForm: React.FC = () => {
                   <tr className="bg-gray-100">
                     <th className="border p-2 text-left">#</th>
                     <th className="border p-2 text-left">Medicine</th>
-                    <th className="border p-2 text-center">Price (INR)</th>
+                    <th className="border p-2 text-center">MRP (INR)</th>
                     <th className="border p-2 text-center">Purchase Price (INR)</th>
                     <th className="border p-2 text-center">Quantity</th>
                     <th className="border p-2 text-center">Total</th>
@@ -364,7 +366,7 @@ const SaleForm: React.FC = () => {
                     <tr key={item.medicine._id} className="border-t">
                       <td className="border p-2">{index + 1}</td>
                       <td className="border p-2">{item.medicine.name}</td>
-                      <td className="border p-2 text-center">{item.medicine.sellingPrice}</td>
+                      <td className="border p-2 text-center">{item.medicine.mrp}</td>
                       <td className="border p-2 text-center">{item.medicine.purchasePrice}</td>
                       <td className="border m-auto p-2 text-center flex justify-center items-center gap-2">
                         <div className=''>
@@ -383,7 +385,7 @@ const SaleForm: React.FC = () => {
                           </button>
                         </div>
                       </td>
-                      <td className="border p-2 text-center">{item.quantity * item.medicine.sellingPrice}</td>
+                      <td className="border p-2 text-center">{item.quantity * item.medicine.mrp}</td>
                       {discountType?.value === 'manual_discount' && <td className="border p-2 text-center"><input onChange={(e) => handleIndividualDiscount(e, item.medicine._id)} min={0} max={100} className='w-15 h-9  appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-2 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800' type="number" /></td>}
                       <td className="border p-2 text-center">
                         <button
