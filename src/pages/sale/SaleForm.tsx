@@ -55,7 +55,7 @@ const SaleForm: React.FC = () => {
   const [_, setSelectedMedicineId] = useState<string>('');
   const [, setIsOpen] = useState(false)
   const [discountAmountFinal, setDiscountAmountFinal] = useState<number>(0);
-  const {error,message,success} = useSelector((state: RootState) => state.sales);
+  const { error, message, success } = useSelector((state: RootState) => state.sales);
 
   const [, setPdfBlob] = useState<Blob | null>(null); // Store PDF Blob for preview
 
@@ -69,12 +69,12 @@ const SaleForm: React.FC = () => {
       toast.error(message);
       // Optionally, clear the error state here if needed
     }
-  
+
     if (success && message) {
       toast.success(message);
       // Optionally, reset success state here if needed
     }
-    return ()=>{
+    return () => {
       dispatch(clearSalesMessage())
     }
   }, [error, success, message]);
@@ -108,9 +108,9 @@ const SaleForm: React.FC = () => {
 
   const calculateTotal = (): { subtotal: number; total: number; totalDiscount: number } => {
     const subtotal = cart.reduce((sum, item) => sum + item.medicine.sellingPrice * item.quantity, 0);
-  
+
     let totalDiscount = 0;
-  
+
     // If the user selected manual discount, sum up the individual item discounts
     if (discountType?.value === "manual_discount") {
       totalDiscount = cart.reduce((sum, item) => sum + item.discount * 0.01 * item.medicine.sellingPrice, 0);
@@ -118,13 +118,13 @@ const SaleForm: React.FC = () => {
       // If overall discount, apply it after calculating subtotal
       totalDiscount = discountAmountFinal * 0.01 * subtotal;
     }
-  
+
     // Ensure the discount doesn't exceed the subtotal
     totalDiscount = Math.min(totalDiscount, subtotal);
-  
+
     return { subtotal, total: subtotal - totalDiscount, totalDiscount };
   };
-  
+
 
   const generatePDF = (saleData: CartItem[], customer: { name: string; mobile: string; }, discount: number = 0, gst: number = 0): void => {
     const doc = new jsPDF();
@@ -145,7 +145,7 @@ const SaleForm: React.FC = () => {
     doc.text(`GST Registered, Tax ID: XYZ123456`, 14, 45);  // GST info on the left top
 
     // Invoice ID (Right Aligned, Positioned Near the Top-Right Corner)
-    
+
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(14);
     doc.text(`P SQUARE PHARMACY`, 200, 30, { align: 'right' });  // Right-align the invoice ID
@@ -182,13 +182,13 @@ const SaleForm: React.FC = () => {
     // Total Calculation Section (Using Improved Layout)
     doc.setFontSize(12);
     const subtotal = saleData.reduce((acc, item) => acc + item.quantity * item.medicine.sellingPrice, 0);
-    const totalAfterDiscount = subtotal - (discountType?.value==="overall_discount" ?subtotal* discount * 0.01:discount);
+    const totalAfterDiscount = subtotal - (discountType?.value === "overall_discount" ? subtotal * discount * 0.01 : discount);
     const gstAmount = gst ? (totalAfterDiscount * gst) / 100 : 0;
     const totalAmount = totalAfterDiscount + gstAmount;
 
     // Total Calculation Section (With Clear Formatting)
     doc.text(`Subtotal: ${subtotal.toFixed(2)} INR`, 155, finalY + 10);
-    doc.text(`Discount: -${discount.toFixed(2)} ${discountType?.value==="manual_discount"? "INR":"%"}`, 155, finalY + 15);
+    doc.text(`Discount: -${discount.toFixed(2)} ${discountType?.value === "manual_discount" ? "INR" : "%"}`, 155, finalY + 15);
     doc.setFont('helvetica', 'bold');
     doc.text(`Total Amount: ${totalAmount.toFixed(2)} INR`, 145, finalY + 30);
 
@@ -226,7 +226,7 @@ const SaleForm: React.FC = () => {
     customerContact: Yup.string().required("Mobile Number is required"),
   });
 
-  const { subtotal, total,totalDiscount } = calculateTotal();
+  const { subtotal, total, totalDiscount } = calculateTotal();
 
   const handleIndividualDiscount = (e: React.ChangeEvent<HTMLInputElement>, medicineId: string): void => {
     const discountValue = Number(e.target.value);
@@ -251,7 +251,7 @@ const SaleForm: React.FC = () => {
         <Formik
           initialValues={{ customerName: '', customerContact: '' }}
           validationSchema={validationSchema}
-          onSubmit={async(values, { resetForm }) => {
+          onSubmit={async (values, { resetForm }) => {
             const saleData: SaleData = {
               ...values,
               items: cart.map((c) => ({
@@ -262,7 +262,7 @@ const SaleForm: React.FC = () => {
               })),
             };
             await dispatch(createSale(saleData));
-            generatePDF(cart, { name: values.customerName, mobile: values.customerContact }, discountType?.value==="manual_discount"? totalDiscount: discountAmountFinal, 0);
+            generatePDF(cart, { name: values.customerName, mobile: values.customerContact }, discountType?.value === "manual_discount" ? totalDiscount : discountAmountFinal, 0);
             setIsOpen(true)
             resetForm();
             setCart([]);
@@ -316,10 +316,10 @@ const SaleForm: React.FC = () => {
                 <div className="w-full">
                   <Label>Select Medicine Type</Label>
                   <Select
-                  isSearchable={false}
+                    isSearchable={false}
                     className='dark:text-black dark:bg-transparent'
 
-                    // defaultInputValue={discountType}
+                    value={discountType}
                     options={discountTypeOptions}
 
                     onChange={(data) => setDiscountType(data as DiscountTypeOptionIF)}
@@ -367,21 +367,21 @@ const SaleForm: React.FC = () => {
                       <td className="border p-2 text-center">{item.medicine.sellingPrice}</td>
                       <td className="border p-2 text-center">{item.medicine.purchasePrice}</td>
                       <td className="border m-auto p-2 text-center flex justify-center items-center gap-2">
-                       <div className=''>
-                       <button
-                          onClick={() => handleQuantityChange(item.medicine._id, -1)}
-                          className="bg-gray-300 text-black px-2 py-1 rounded"
-                        >
-                          -
-                        </button>
-                        <span>{item.quantity}</span>
-                        <button
-                          onClick={() => handleQuantityChange(item.medicine._id, 1)}
-                          className="bg-gray-300 text-black px-2 py-1 rounded"
-                        >
-                          +
-                        </button>
-                       </div>
+                        <div className=''>
+                          <button
+                            onClick={() => handleQuantityChange(item.medicine._id, -1)}
+                            className="bg-gray-300 text-black px-2 py-1 rounded"
+                          >
+                            -
+                          </button>
+                          <span>{item.quantity}</span>
+                          <button
+                            onClick={() => handleQuantityChange(item.medicine._id, 1)}
+                            className="bg-gray-300 text-black px-2 py-1 rounded"
+                          >
+                            +
+                          </button>
+                        </div>
                       </td>
                       <td className="border p-2 text-center">{item.quantity * item.medicine.sellingPrice}</td>
                       {discountType?.value === 'manual_discount' && <td className="border p-2 text-center"><input onChange={(e) => handleIndividualDiscount(e, item.medicine._id)} min={0} max={100} className='w-15 h-9  appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-2 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800' type="number" /></td>}
@@ -408,7 +408,7 @@ const SaleForm: React.FC = () => {
             <span>Subtotal:</span> <span>INR {subtotal.toFixed(2)}</span>
           </p>
           <p className="text-sm flex justify-between">
-            <span>Discount ({discountType?.value==="manual_discount"? "INR":"%"}):</span> <span> {discountType?.value === 'manual_discount' ? totalDiscount : <input type="number" className="text-right w-15 h-9 my-3  appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-2 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" value={discountAmountFinal} max={100} min={0} onChange={(e) => setDiscountAmountFinal(Number(e.target.value))} />}  </span>
+            <span>Discount ({discountType?.value === "manual_discount" ? "INR" : "%"}):</span> <span> {discountType?.value === 'manual_discount' ? totalDiscount : <input type="number" className="text-right w-15 h-9 my-3  appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-2 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" value={discountAmountFinal} max={100} min={0} onChange={(e) => setDiscountAmountFinal(Number(e.target.value))} />}  </span>
           </p>
           <p className="font-bold flex justify-between">
             <span>Total:</span> <span>INR {total.toFixed(2)}</span>

@@ -16,7 +16,7 @@ import { Modal } from '../../components/ui/modal';
 
 export default function MedicineList() {
   const { medicines, loading, error, message } = useSelector((state: RootState) => state.medicine);
-  const { loading:fileUploadLoading, error:fileUploadError } = useSelector((state: RootState) => state.uploadFile);
+  const { loading: fileUploadLoading, error: fileUploadError } = useSelector((state: RootState) => state.uploadFile);
   const [searchParams] = useSearchParams();
   const [filteredData, setFilteredData] = useState<Medicine[]>([]);
   const [file, setFile] = useState<File | null>(null);
@@ -52,7 +52,7 @@ export default function MedicineList() {
     setFile(null);
   };
 
-  if (loading|| fileUploadLoading) return <LoadingOverlay isLoading={true} />;
+  if (loading || fileUploadLoading) return <LoadingOverlay isLoading={true} />;
   if (error || fileUploadError) return <p>Error: {fileUploadError || error}</p>;
 
   if (medicines.length === 0) {
@@ -75,7 +75,7 @@ export default function MedicineList() {
             <Button>
               <Link to="/medicine/items/add">Add Medicine</Link>
             </Button>
-            <Button onClick={() => setShowModal(true)}>{fileUploadLoading ? "wait...":"Upload XLSX"}</Button>
+            <Button onClick={() => setShowModal(true)}>{fileUploadLoading ? "wait..." : "Bulk Upload"}</Button>
           </div>
         </div>
 
@@ -101,18 +101,18 @@ export default function MedicineList() {
                     {medicine.medicineCode}
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                    <p title={medicine.name} className="whitespace-nowrap max-w-[100px] text-ellipsis overflow-hidden">
-                      {medicine.name}
+                    <p title={medicine.name} className="whitespace-nowrap max-w-[300px] text-ellipsis overflow-hidden">
+                      {medicine.name ? medicine.name : "NA"}
                     </p>
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                    {medicine.genericName}
+                    {medicine.genericName ? medicine.genericName : "NA"}
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                    {medicine.form}
+                    {medicine.form ? medicine.form : "NA"}
                   </TableCell>
                   <TableCell className="px-5 py-4 text-start text-gray-700 dark:text-gray-300">
-                    {medicine.strength}
+                    {medicine.strength ? medicine.strength : "NA"}
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2 justify-around items-center">
@@ -132,18 +132,19 @@ export default function MedicineList() {
       </div>
 
       {/* Modal */}
-      <Modal  className='w-1/2 m-auto' isOpen={showModal} onClose={() => setShowModal(false)} >
+      <Modal className='w-1/2 m-auto' isOpen={showModal} onClose={() => setShowModal(false)} >
         <div className="space-y-4 p-4">
           <Label>Select XLSX File</Label>
           <input
-          disabled={fileUploadLoading}
+            disabled={fileUploadLoading}
             type="file"
             accept=".xlsx, .xls"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
           />
+          <Button><a download={true} href="./sample/bulk-medicine-upload-sample.xlsx">Download Sample</a></Button>
           {file && <p className="text-sm text-gray-600 mt-2">Selected file: <strong>{file.name}</strong></p>}
           <div className="mt-4 flex justify-end gap-2">
-            <Button  onClick={() => setShowModal(false)}>Cancel</Button>
+            <Button onClick={() => setShowModal(false)}>Cancel</Button>
             <Button disabled={fileUploadLoading} onClick={handleSubmit}>Submit</Button>
           </div>
         </div>
