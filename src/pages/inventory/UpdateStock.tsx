@@ -80,7 +80,7 @@ const UpdateStock: React.FC<UpdateStockProps> = () => {
     try {
       await dispatch(addOrUpdateInventory(formData));
       // this navigation will handle proper but for now, only for client purpose 
-      navigate('/medicine/items')
+      navigate(`/medicine/inventory?selectedMedicineId=${formData.medicineId}`)
 
     } catch (error) {
       console.error('Error updating stock:', error);

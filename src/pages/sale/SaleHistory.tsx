@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../../features/store';
 import { getAllSales } from '../../features/sale/saleApi';
-import Button from '../../components/ui/button/Button';
+import Button from '../../components/ui/Button/Button';
 import { Link, useSearchParams } from 'react-router';
 
 const SaleHistory = () => {
@@ -18,7 +18,7 @@ const SaleHistory = () => {
   useEffect(() => {
     const q = searchParams.get('q');
     console.log(q);
-  
+
     if (!q) {
       setFilteredData(sales);
     } else {
@@ -28,10 +28,10 @@ const SaleHistory = () => {
           item.invoiceId.toLowerCase().includes(q?.toLowerCase() || '')
         )
       }));
-  
+
       // Remove sales with no items matching the search term
       const nonEmptySales = filtered.filter(sale => sale.sales.length > 0);
-  
+
       setFilteredData(nonEmptySales);
     }
   }, [searchParams, sales]);
@@ -51,16 +51,16 @@ const SaleHistory = () => {
   }
 
   if (sales.length === 0) {
-    return <div className='flex flex-col justify-center items-center gap-1'><div className="p-8 text-center text-gray-500 text-lg">No sales history available.</div><Button onClick={()=>console.log("k")}> <Link to={"/sale/add"}>Add Sell</Link> </Button></div>
-    
-    ;
+    return <div className='flex flex-col justify-center items-center gap-1'><div className="p-8 text-center text-gray-500 text-lg">No sales history available.</div><Button onClick={() => console.log("k")}> <Link to={"/sale/add"}>Add Sell</Link> </Button></div>
+
+      ;
   }
 
   return (
     <div className="p-1 md:p-8">
       <div className='flex justify-between items-center'>
-      <h1 className="text-2xl font-bold mb-4">Sales List</h1>
-      <Button onClick={()=>console.log("k")}> <Link to={"/sale/add"}>Add Sale</Link> </Button>
+        <h1 className="text-2xl font-bold mb-4">Sales List</h1>
+        <Button onClick={() => console.log("k")}> <Link to={"/sale/add"}>Add Sale</Link> </Button>
       </div>
 
       {filteredData.map((monthlySale, index) => (
@@ -68,32 +68,32 @@ const SaleHistory = () => {
           <h2 className="text-xl font-semibold">{getMonthName(monthlySale.month)} {monthlySale.year}</h2>
           <p className="font-semibold">Total Earnings: INR {monthlySale.totalTransaction?.toFixed(2)}</p>
 
-         <div className='w-full overflow-auto'>
-         <table className="table-auto w-full mt-4 border-collapse border border-gray-200">
-            <thead>
-              <tr className="bg-gray-200 dark:bg-gray-700">
-                <th className="p-2">Invoice ID</th>
-                <th className="p-2">Customer Name</th>
-                <th className="p-2">Customer Contact</th>
-                <th className="p-2">Total Amount</th>
-                <th className="p-2">Sold By</th>
-                <th className="p-2">Created At</th>
-              </tr>
-            </thead>
-            <tbody>
-              {monthlySale.sales.map((sale:any) => (
-                <tr key={sale.invoiceId} className="text-center hover:bg-gray-200 dark:hover:bg-gray-800">
-                  <td className="p-2">{sale.invoiceId}</td>
-                  <td className="p-2">{sale.customerName || 'N/A'}</td>
-                  <td className="p-2">{sale.customerContact || 'N/A'}</td>
-                  <td className="p-2">INR {sale.totalAmount?.toFixed(2)}</td>
-                  <td className="p-2">{sale?.soldBy?.username}</td>
-                  <td className="p-2">{new Date(sale.createdAt).toLocaleString()}</td>
+          <div className='w-full overflow-auto'>
+            <table className="table-auto w-full mt-4 border-collapse border border-gray-200">
+              <thead>
+                <tr className="bg-gray-200 dark:bg-gray-700">
+                  <th className="p-2">Invoice ID</th>
+                  <th className="p-2">Customer Name</th>
+                  <th className="p-2">Customer Contact</th>
+                  <th className="p-2">Total Amount</th>
+                  <th className="p-2">Sold By</th>
+                  <th className="p-2">Created At</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-         </div>
+              </thead>
+              <tbody>
+                {monthlySale.sales.map((sale: any) => (
+                  <tr key={sale.invoiceId} className="text-center hover:bg-gray-200 dark:hover:bg-gray-800">
+                    <td className="p-2">{sale.invoiceId}</td>
+                    <td className="p-2">{sale.customerName || 'N/A'}</td>
+                    <td className="p-2">{sale.customerContact || 'N/A'}</td>
+                    <td className="p-2">INR {sale.totalAmount?.toFixed(2)}</td>
+                    <td className="p-2">{sale?.soldBy?.username}</td>
+                    <td className="p-2">{new Date(sale.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       ))}
     </div>

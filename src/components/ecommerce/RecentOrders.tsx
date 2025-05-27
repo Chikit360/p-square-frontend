@@ -4,8 +4,8 @@ import {
   TableCell,
   TableHeader,
   TableRow,
-} from "../ui/table/index";
-import Badge from "../ui/badge/Badge";
+} from "../ui/Table/index";
+import Badge from "../ui/Badge/Badge";
 
 // Define the TypeScript interface for the table rows
 interface Product {
@@ -191,8 +191,8 @@ export default function RecentOrders() {
                       product.status === "Delivered"
                         ? "success"
                         : product.status === "Pending"
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                   >
                     {product.status}
