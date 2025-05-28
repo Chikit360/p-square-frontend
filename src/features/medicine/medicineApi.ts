@@ -6,7 +6,7 @@ import axios from 'axios';
 // Create Medicine
 export const createMedicine = createAsyncThunk(
   'medicine/createMedicine',
-  async (medicineData:any, { rejectWithValue }) => {
+  async (medicineData: any, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.post("/medicines", medicineData);
       return response.data;
@@ -28,8 +28,8 @@ export const getAllMedicines = createAsyncThunk(
       return response.data;
     } catch (error) {
 
-      
-      
+
+
       if (axios.isAxiosError(error)) {
         return error.response?.data // rejectWithValue(error.response?.data || 'An error occurred');
       }
@@ -89,9 +89,9 @@ export const deleteMedicineById = createAsyncThunk(
 // Delete Medicine By ID
 export const activeMedicines = createAsyncThunk(
   'medicine/active list',
-  async (_, { rejectWithValue }) => {
+  async (page: number, { rejectWithValue }) => {
     try {
-      const response=await axiosInstance.get(`/medicines/active`);
+      const response = await axiosInstance.get(`/medicines/active?page=${page}`);
       return response.data;
     } catch (error) {
       if (axios.isAxiosError(error)) {

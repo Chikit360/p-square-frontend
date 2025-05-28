@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { AppDispatch, RootState } from '../../features/store';
 import { createSale } from '../../features/sale/saleApi';
 import { activeMedicines } from '../../features/medicine/medicineApi';
-import Select from 'react-select'
+import Select, { components, MenuListProps, MultiValue } from 'react-select'
 import Label from '../../components/form/Label';
 import { toast } from 'react-toastify';
 import { clearSalesMessage } from '../../features/sale/sale.slice';
@@ -51,7 +51,7 @@ interface SaleData {
 
 const SaleForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { activeMedicineList } = useSelector((state: RootState) => state.activeMedicines);
+  const { activeMedicineList, loading, totalPages, } = useSelector((state: RootState) => state.activeMedicines);
   const [discountType, setDiscountType] = useState<DiscountTypeOptionIF | null>(discountTypeOptions[0]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [_, setSelectedMedicineId] = useState<string>('');
@@ -59,12 +59,13 @@ const SaleForm: React.FC = () => {
   const [discountAmountFinal, setDiscountAmountFinal] = useState<number>(0);
   const { error, message, success } = useSelector((state: RootState) => state.sales);
 
+  const [page, setPage] = useState(1);
   const [, setPdfBlob] = useState<Blob | null>(null); // Store PDF Blob for preview
 
 
   useEffect(() => {
-    dispatch(activeMedicines());
-  }, [dispatch]);
+    dispatch(activeMedicines(page));
+  }, [dispatch, page]);
 
   useEffect(() => {
     if (error) {
@@ -81,20 +82,34 @@ const SaleForm: React.FC = () => {
     }
   }, [error, success, message]);
 
-  const handleAddToCart = (medicine: Medicine): void => {
+  const handleAddToCart = (selectedArray: MultiValue<any> = []): void => {
+    // Convert selectedArray to a Set of selected IDs
+    const selectedIds = new Set(selectedArray.map(item => item.value));
+
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.medicine._id === medicine._id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.medicine._id === medicine._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { discount: 0, medicine, quantity: 1 }];
+      const updatedCart: typeof prevCart = [];
+
+      // Keep only selected items and update quantities if needed
+      selectedIds.forEach(id => {
+        const medicine = activeMedicineList.find(m => m._id === id);
+        if (!medicine) return;
+
+        const existingItem = prevCart.find(item => item.medicine._id === id);
+        if (existingItem) {
+          updatedCart.push(existingItem); // Keep as-is
+        } else {
+          updatedCart.push({ discount: 0, medicine, quantity: 1 }); // Add new
+        }
+      });
+
+      return updatedCart;
     });
+
+    // Optional: Clear local medicine ID tracker if needed
     setSelectedMedicineId('');
   };
+
+
 
   const handleQuantityChange = (id: string, change: number): void => {
     setCart((prevCart) =>
@@ -104,9 +119,9 @@ const SaleForm: React.FC = () => {
     );
   };
 
-  const handleRemove = (id: string): void => {
-    setCart((prevCart) => prevCart.filter((item) => item.medicine._id !== id));
-  };
+  // const handleRemove = (id: string): void => {
+  //   setCart((prevCart) => prevCart.filter((item) => item.medicine._id !== id));
+  // };
 
   const calculateTotal = (): { subtotal: number; total: number; totalDiscount: number } => {
     const subtotal = cart.reduce((sum, item) => sum + item.medicine.mrp * item.quantity, 0);
@@ -223,10 +238,11 @@ const SaleForm: React.FC = () => {
 
 
 
-
   const validationSchema = Yup.object({
     customerName: Yup.string().optional(),
-    customerContact: Yup.string().required("Mobile Number is required"),
+    customerContact: Yup.string()
+      .required("Mobile Number is required")
+      .matches(/^\d{10}$/, "Mobile Number must be exactly 10 digits"),
   });
 
   const { subtotal, total, totalDiscount } = calculateTotal();
@@ -265,12 +281,18 @@ const SaleForm: React.FC = () => {
                 mrp: c.medicine.mrp,
               })),
             };
-            await dispatch(createSale(saleData));
-            generatePDF(cart, { name: values.customerName, mobile: values.customerContact }, discountType?.value === "manual_discount" ? totalDiscount : discountAmountFinal, 0);
-            setIsOpen(true)
-            resetForm();
-            setCart([]);
-            setSelectedMedicineId('');
+            try {
+              await dispatch(createSale(saleData));
+              generatePDF(cart, { name: values.customerName, mobile: values.customerContact }, discountType?.value === "manual_discount" ? totalDiscount : discountAmountFinal, 0);
+              setIsOpen(true)
+              resetForm();
+              setCart([]);
+              setSelectedMedicineId('');
+
+            } catch (error: any) {
+              toast.error(error)
+            }
+
           }}
         >
           {({ isSubmitting }) => (
@@ -284,33 +306,34 @@ const SaleForm: React.FC = () => {
               <div>
                 <Label ><span>Customer Contact</span> <span className='text-red-500'>*</span></Label>
                 <Field name="customerContact" className="h-9 w-full appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800" />
+                <ErrorMessage name="customerContact" component="div" className="text-xs text-red-500" />
               </div>
 
               <div className="flex flex-col items-start space-y-4">
                 <div className="w-full">
                   <Label>Select Medicine</Label>
                   <Select
-                    className='dark:text-black dark:bg-transparent'
-                    isSearchable={true}
+                    className="dark:text-black dark:bg-transparent"
+                    isSearchable
+                    isMulti
+
                     options={activeMedicineList
-                      .filter(med => !cart.some(item => item.medicine._id === med._id))
-                      .map((medicine: Medicine) => (
-                        {
-                          ...medicine,
-                          value: medicine._id,
-                          label: `${medicine.name} - ${medicine.mrp}`
-                        }
-
-                      ))}
-
-                    onChange={(data) => {
-                      const selectedMedicine = activeMedicineList.find((m) => m._id === data?._id);
-                      if (selectedMedicine) {
-                        handleAddToCart(selectedMedicine);
-                      }
+                      .map(medicine => ({
+                        value: medicine._id,
+                        label: `${medicine.name} - ${medicine.totalStock}`
+                      }))
+                    }
+                    onChange={(selectedArray) => {
+                      // const selectedMedicine = activeMedicineList.find((m) => m._id === data?.value);
+                      handleAddToCart(selectedArray)
+                      // if (selectedMedicine) {
+                      //   handleAddToCart(selectedMedicine);
+                      // }
                     }}
-
+                    components={{ MenuList: createCustomMenuList(page, setPage, totalPages) }}
+                    isLoading={loading}
                   />
+
 
 
 
@@ -318,7 +341,7 @@ const SaleForm: React.FC = () => {
               </div>
               <div className="flex flex-col items-start space-y-4">
                 <div className="w-full">
-                  <Label>Select Medicine Type</Label>
+                  <Label>Select Discount Type</Label>
                   <Select
                     isSearchable={false}
                     className='dark:text-black dark:bg-transparent'
@@ -360,7 +383,7 @@ const SaleForm: React.FC = () => {
                     <th className="border p-2 text-center">Quantity</th>
                     <th className="border p-2 text-center">Total</th>
                     {discountType?.value === 'manual_discount' && <th className="border p-2 text-center">Discount %</th>}
-                    <th className="border p-2 text-center">Actions</th>
+                    {/* <th className="border p-2 text-center">Actions</th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -389,14 +412,14 @@ const SaleForm: React.FC = () => {
                       </td>
                       <td className="border p-2 text-center">{item.quantity * item.medicine.mrp}</td>
                       {discountType?.value === 'manual_discount' && <td className="border p-2 text-center"><input onChange={(e) => handleIndividualDiscount(e, item.medicine._id)} min={0} max={100} className='w-15 h-9  appearance-none rounded-md border bg-white border-gray-300 px-4 py-2.5 pr-2 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800' type="number" /></td>}
-                      <td className="border p-2 text-center">
+                      {/* <td className="border p-2 text-center">
                         <button
                           onClick={() => handleRemove(item.medicine._id)}
                           className="bg-red-500 text-white px-3 py-1 rounded"
                         >
                           Remove
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -425,6 +448,50 @@ const SaleForm: React.FC = () => {
     </div>
   );
 };
+
+
+const createCustomMenuList = (
+  page: number,
+  setPage: (updater: (prev: number) => number) => void,
+  totalPages: number
+) => {
+  const CustomMenuList = (props: MenuListProps) => {
+    return (
+      <>
+        <components.MenuList {...props}>
+          {props.children}
+          <div className="flex justify-between items-center p-2 border-t text-sm bg-white dark:bg-gray-800">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (page > 1) setPage(prev => prev - 1);
+              }}
+              disabled={page === 1}
+              className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Prev
+            </button>
+            <span className="px-2">{`Page ${page} of ${totalPages}`}</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (page < totalPages) setPage(prev => prev + 1);
+              }}
+              disabled={page >= totalPages}
+              className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
+            >
+              Next
+            </button>
+          </div>
+        </components.MenuList>
+      </>
+    );
+  };
+
+  return CustomMenuList;
+};
+
+
 
 export default SaleForm;
 

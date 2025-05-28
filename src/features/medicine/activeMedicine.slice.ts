@@ -1,39 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
-import {activeMedicines } from './medicineApi';
+import { activeMedicines } from './medicineApi';
 
 interface Medicine {
-  _id:string,
-  medicineId: string;
-  name: string;
-  genericName: string;
-  manufacturer: string;
-  category: string;
-  form: string;
-  strength: string;
-  unit: string;
-  batchNumber: string;
-  manufactureDate: string;
-  expiryDate: string;
-  mrp: number;
-  purchasePrice: number;
-  sellingPrice: number;
-  quantityInStock: number;
-  minimumStockLevel: number;
-  shelfLocation: string;
-  prescriptionRequired: boolean;
-  notes?: string;
-  status: string;
+  _id: string,
+  name: string,
+  totalStock: number,
+  sellingPrice?: number,
+  mrp: number,
+  purchasePrice: number
 }
 
 interface MedicineState {
   activeMedicineList: Medicine[];
+  totalPages: number;
+  currentPage: number;
+  totalCount: number;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: MedicineState = {
   activeMedicineList: [],
-  
+  totalPages: 0,
+  currentPage: 0,
+  totalCount: 0,
   loading: false,
   error: null,
 };
@@ -51,6 +41,9 @@ const activeMedicineSlice = createSlice({
       .addCase(activeMedicines.fulfilled, (state, action) => {
         state.loading = false;
         state.activeMedicineList = action.payload.data;
+        state.totalPages = action.payload.totalPages;
+        state.currentPage = action.payload.currentPage;
+        state.totalCount = action.payload.totalCount;
       })
       .addCase(activeMedicines.rejected, (state, action) => {
         state.loading = false;

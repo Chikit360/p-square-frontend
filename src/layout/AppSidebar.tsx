@@ -76,8 +76,8 @@ const othersItems: NavItem[] = [
     icon: <PieChartIcon />,
     name: "Utility",
     subItems: [
-      // { name: "Strength", path: "/admin/strength",role:["admin"], pro: false },
       { name: "Form", path: "/admin/form", role: ["admin"], pro: false },
+      { name: "User", path: "/admin/strength", role: ["admin"], pro: false },
     ],
   },
   // {
