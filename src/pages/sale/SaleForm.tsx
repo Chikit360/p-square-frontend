@@ -242,7 +242,7 @@ const SaleForm: React.FC = () => {
     customerName: Yup.string().optional(),
     customerContact: Yup.string()
       .required("Mobile Number is required")
-      .matches(/^\d{10}$/, "Mobile Number must be exactly 10 digits"),
+    // .matches(/^\d{10}$/, "Mobile Number must be exactly 10 digits"),
   });
 
   const { subtotal, total, totalDiscount } = calculateTotal();
@@ -316,29 +316,22 @@ const SaleForm: React.FC = () => {
                     className="dark:text-black dark:bg-transparent"
                     isSearchable
                     isMulti
-
-                    options={activeMedicineList
-                      .map(medicine => ({
-                        value: medicine._id,
-                        label: `${medicine.name} - ${medicine.totalStock}`
-                      }))
-                    }
-                    onChange={(selectedArray) => {
-                      // const selectedMedicine = activeMedicineList.find((m) => m._id === data?.value);
-                      handleAddToCart(selectedArray)
-                      // if (selectedMedicine) {
-                      //   handleAddToCart(selectedMedicine);
-                      // }
-                    }}
-                    components={{ MenuList: createCustomMenuList(page, setPage, totalPages) }}
                     isLoading={loading}
+                    options={activeMedicineList.map(medicine => ({
+                      value: medicine._id,
+                      label: `${medicine.name} - ${medicine.totalStock}`
+                    }))}
+                    onChange={(selectedArray) => {
+                      handleAddToCart([...selectedArray]); // spread to ensure mutable array
+                    }}
+                    // 🔍 Custom filter for case-insensitive search
+                    filterOption={(option, inputValue) =>
+                      option.label.toLowerCase().includes(inputValue.toLowerCase())
+                    }
                   />
-
-
-
-
                 </div>
               </div>
+
               <div className="flex flex-col items-start space-y-4">
                 <div className="w-full">
                   <Label>Select Discount Type</Label>
@@ -449,47 +442,6 @@ const SaleForm: React.FC = () => {
   );
 };
 
-
-const createCustomMenuList = (
-  page: number,
-  setPage: (updater: (prev: number) => number) => void,
-  totalPages: number
-) => {
-  const CustomMenuList = (props: MenuListProps) => {
-    return (
-      <>
-        <components.MenuList {...props}>
-          {props.children}
-          <div className="flex justify-between items-center p-2 border-t text-sm bg-white dark:bg-gray-800">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (page > 1) setPage(prev => prev - 1);
-              }}
-              disabled={page === 1}
-              className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Prev
-            </button>
-            <span className="px-2">{`Page ${page} of ${totalPages}`}</span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                if (page < totalPages) setPage(prev => prev + 1);
-              }}
-              disabled={page >= totalPages}
-              className="px-2 py-1 bg-gray-200 rounded disabled:opacity-50"
-            >
-              Next
-            </button>
-          </div>
-        </components.MenuList>
-      </>
-    );
-  };
-
-  return CustomMenuList;
-};
 
 
 
