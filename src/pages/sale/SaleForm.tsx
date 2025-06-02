@@ -7,7 +7,7 @@ import autoTable from 'jspdf-autotable';
 import { AppDispatch, RootState } from '../../features/store';
 import { createSale } from '../../features/sale/saleApi';
 import { activeMedicines } from '../../features/medicine/medicineApi';
-import Select, { components, MenuListProps, MultiValue } from 'react-select'
+import Select, { MultiValue } from 'react-select'
 import Label from '../../components/form/Label';
 import { toast } from 'react-toastify';
 import { clearSalesMessage } from '../../features/sale/sale.slice';
@@ -51,7 +51,7 @@ interface SaleData {
 
 const SaleForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { activeMedicineList, loading, totalPages, } = useSelector((state: RootState) => state.activeMedicines);
+  const { activeMedicineList, loading, } = useSelector((state: RootState) => state.activeMedicines);
   const [discountType, setDiscountType] = useState<DiscountTypeOptionIF | null>(discountTypeOptions[0]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [_, setSelectedMedicineId] = useState<string>('');
@@ -59,7 +59,7 @@ const SaleForm: React.FC = () => {
   const [discountAmountFinal, setDiscountAmountFinal] = useState<number>(0);
   const { error, message, success } = useSelector((state: RootState) => state.sales);
 
-  const [page, setPage] = useState(1);
+  const [page,] = useState(1);
   const [, setPdfBlob] = useState<Blob | null>(null); // Store PDF Blob for preview
 
 
